@@ -1,0 +1,127 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feria Virtual - Nosotros</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Animaciones AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="{% static 'aplicacion/css/style.css' %}">
+</head>
+<body>
+
+  <!-- 🌟 Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-success" href="{% url 'index' %}">
+        <img src="{% static 'img/logo.png' %}" alt="Logo" width="40" class="me-2 logo"> Feria Virtual
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'productos' %}">Productos</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'ventas' %}">Ventas</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'subastas' %}">Subastas</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'reportes' %}" >Reportes</a></li>
+          <li class="nav-item"><a class="nav-link active fw-bold" href="{% url 'nosotros' %}">Nosotros</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 🏢 Sección Nosotros -->
+  <main class="pt-5 mt-4">
+    <div class="container">
+      <h1 class="text-center text-success fw-bold mb-5" data-aos="fade-up">Sobre Nosotros</h1>
+
+      <!-- Misión y Visión -->
+      <div class="row mb-5">
+        <div class="col-md-6 mb-4" data-aos="fade-right">
+          <div class="card shadow-lg p-4 border-0">
+            <h3 class="fw-bold text-success">🌱 Misión</h3>
+            <p>Facilitar la comercialización de frutas producidas en la zona sur metropolitana, optimizando la cadena de valor mediante una plataforma tecnológica innovadora que conecta productores, clientes y transportistas, reduciendo pérdidas y mejorando la eficiencia logística.</p>
+          </div>
+        </div>
+        <div class="col-md-6 mb-4" data-aos="fade-left">
+          <div class="card shadow-lg p-4 border-0">
+            <h3 class="fw-bold text-primary">🚀 Visión</h3>
+            <p>Ser la plataforma líder en Chile y Latinoamérica en la gestión y comercialización digital de frutas, reconocida por su innovación, transparencia y compromiso con la sostenibilidad.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Valores -->
+      <div class="mb-5" data-aos="zoom-in">
+        <h2 class="text-center fw-bold text-warning mb-4">Nuestros Valores</h2>
+        <div class="row text-center">
+          <div class="col-md-3 mb-3">
+            <div class="card p-3 shadow border-0 h-100">
+              <h5 class="fw-bold">🤝 Transparencia</h5>
+              <p>Procesos claros y confiables para todos los actores.</p>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="card p-3 shadow border-0 h-100">
+              <h5 class="fw-bold">🌍 Sostenibilidad</h5>
+              <p>Reducción de pérdidas de fruta y cuidado del medio ambiente.</p>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="card p-3 shadow border-0 h-100">
+              <h5 class="fw-bold">💡 Innovación</h5>
+              <p>Uso de tecnologías modernas para optimizar procesos.</p>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="card p-3 shadow border-0 h-100">
+              <h5 class="fw-bold">📦 Eficiencia</h5>
+              <p>Mejora continua en logística y distribución de productos.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Organigrama -->
+      <div class="mb-5" data-aos="fade-up">
+        <h2 class="text-center fw-bold text-success mb-4">Nuestro Organigrama</h2>
+        <div class="organigrama">
+            <ul>
+                <li>
+                    <span class="boss">Dirección General</span>
+                    <ul>
+                        <li><span>Producción</span></li>
+                        <li><span>Ventas Locales</span></li>
+                        <li><span>Ventas Internacionales</span></li>
+                        <li><span>Logística</span></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 🌱 Footer -->
+  <footer class="bg-dark text-light text-center py-4 mt-5">
+    <p class="mb-1">&copy; 2025 Feria Virtual - Maipo Grande</p>
+    <p class="mb-0">📍 Santiago, Chile | 📧 contacto@maipogrande.cl | ☎ +56 2 1234 5678</p>
+    <div class="mt-2">
+      <a href="#" class="text-light me-3">Facebook</a>
+      <a href="#" class="text-light me-3">Instagram</a>
+      <a href="#" class="text-light">LinkedIn</a>
+    </div>
+  </footer>
+
+  <!-- Bootstrap + AOS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init();</script>
+</body>
+</html>

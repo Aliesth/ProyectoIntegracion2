@@ -1,0 +1,50 @@
+{% extends "index.html" %}  {% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card shadow-lg border-success">
+        <div class="card-header bg-success text-white text-center">
+            <h1 class="mb-0">✅ ¡Pedido Enviado con Éxito!</h1>
+        </div>
+        <div class="card-body p-4">
+            <h4 class="card-title text-success">Resumen de la Orden #{{ pedido.id }}</h4>
+            <p><strong>Fecha del Pedido:</strong> {{ pedido.fecha_pedido|date:"d M Y H:i" }}</p>
+            <p><strong>Cliente:</strong> {{ pedido.usuario.first_name }} {{ pedido.usuario.last_name }} ({{ pedido.usuario.email }})</p>
+            
+            <hr>
+
+            <h5>Artículos Comprados:</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Fruta</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {# Iteramos sobre los detalles (DetallePedido) que nos pasó la vista #}
+                    {% for detalle in detalles %}
+                    <tr>
+                        <td>{{ detalle.fruta.nombre }}</td>
+                        <td>{{ detalle.cantidad }}</td>
+                        <td>${{ detalle.precio_unitario }}</td>
+                        <td>${{ detalle.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <hr>
+            
+            <h4 class="text-end text-danger">Total Final del Pedido: **${{ pedido.total_pedido }}**</h4>
+            
+            <div class="mt-4 text-center">
+                <a href="{% url 'catalogo_frutas' %}" class="btn btn-outline-success me-3">Seguir Comprando</a>
+                <a href="{% url 'index' %}" class="btn btn-primary">Volver al Inicio</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

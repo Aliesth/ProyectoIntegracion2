@@ -1,0 +1,111 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo de Productos - Feria Virtual</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static '/css/style.css' %}">
+  <style>
+      .product-img {
+          height: 200px !important;
+          object-fit: cover !important;
+      }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-success" href="{% url 'index' %}">
+        <img src="{% static 'img/logo.png' %}"alt="Logo" width="40" class="me-2"> Feria Virtual
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link active" href="{% url 'productos' %}">Productos</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'ventas' %}">Ventas</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'subastas' %}">Subastas</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'reportes' %}">Reportes</a></li>
+        </ul>
+        <div class="d-flex">
+          <a href="{% url 'carrito' %}">🛒</a>
+          <a href="login.html" class="btn btn-success">Login</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+
+
+{% load static %}
+
+{% block content %}
+<div class="container my-5 pt-4">
+    <h1 class="mb-4 text-success">Panel de Gestión de Catálogo</h1>
+    <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'index' %}">Inicio</a></li>
+    
+    <a href="{% url 'fruta_crear' %}" class="btn btn-primary mb-3">➕ Añadir Nueva Fruta</a>
+
+    {% if frutas_gestion %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fruta in frutas_gestion %}
+                    <tr>
+                        <td>{{ fruta.id }}</td>
+                        <td>{{ fruta.nombre }}</td>
+                        <td>${{ fruta.precio|floatformat:2 }}</td>
+                        <td>
+                            <a href="{% url 'fruta_editar' fruta.pk %}" class="btn btn-sm btn-warning me-2">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            
+                            <a href="{% url 'fruta_eliminar' fruta.pk %}" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">Aún no hay frutas registradas en este catálogo. Utiliza el botón de arriba para añadir una.</div>
+    {% endif %}
+</div>
+{% endblock %}
+
+<!-- Footer -->
+  <footer class="bg-dark text-light text-center py-4 mt-5">
+    <p class="mb-1">&copy; 2025 Feria Virtual - Maipo Grande</p>
+    <p class="mb-0">📍 Santiago, Chile | 📧 contacto@maipogrande.cl | ☎ +56 2 1234 5678</p>
+    <div class="mt-2">
+      <a href="#" class="text-light me-3">Facebook</a>
+      <a href="#" class="text-light me-3">Instagram</a>
+      <a href="#" class="text-light">LinkedIn</a>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init();</script>
+</body>
+</html>

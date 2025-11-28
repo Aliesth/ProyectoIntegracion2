@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito de Compras - Feria Virtual</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'aplicacion/css/style.css' %}">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-success" href="{% url 'index' %}">
+        <img src="{% static 'img/logo.png' %}" alt="Logo" width="40" class="me-2"> Feria Virtual
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'productos' %}">Productos</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'ventas' %}">Ventas</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'subastas' %}">Subastas</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'reportes' %}">Reportes</a></li>
+
+        </ul>
+        <div class="d-flex">
+          <a href="carrito.html" class="btn btn-success me-2">🛒</a>
+          <a href="login.html" class="btn btn-outline-success">Login</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Carrito -->
+  <section class="container my-5 pt-5">
+    <h2 class="mb-4 text-center text-success" data-aos="fade-up">🛒 Carrito de Compras</h2>
+
+    <!-- Tabla de productos -->
+    <div class="table-responsive" data-aos="zoom-in">
+      <table class="table table-bordered align-middle text-center">
+        <thead class="table-success">
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Uvas Blancas</td>
+            <td><input type="number" value="2" min="1" class="form-control text-center"></td>
+            <td>$1.500</td>
+            <td>$3.000</td>
+            <td><button class="btn btn-danger btn-sm">Eliminar</button></td>
+          </tr>
+          <tr>
+            <td>Manzanas Rojas</td>
+            <td><input type="number" value="5" min="1" class="form-control text-center"></td>
+            <td>$1.000</td>
+            <td>$5.000</td>
+            <td><button class="btn btn-danger btn-sm">Eliminar</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Selección destino -->
+    <div class="my-4" data-aos="fade-right">
+      <label class="form-label fw-bold">Destino del Pedido:</label>
+      <select class="form-select w-50">
+        <option>Local (Chile)</option>
+        <option>Internacional (Exportación)</option>
+      </select>
+    </div>
+
+    <!-- Resumen del pedido -->
+    <div class="p-4 bg-light rounded shadow-sm" data-aos="fade-up">
+      <h5>Resumen del Pedido</h5>
+      <p>Subtotal productos: <strong>$8.000</strong></p>
+      <p>Transporte: <strong>$2.000</strong></p>
+      <p>Costos adicionales (aduana, si aplica): <strong>$3.000</strong></p>
+      <h4>Total: <span class="text-success">$13.000</span></h4>
+      <button class="btn btn-success w-100 mt-3">Finalizar Pedido</button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-light text-center py-4 mt-5">
+    <p class="mb-1">&copy; 2025 Feria Virtual - Maipo Grande</p>
+    <p class="mb-0">📍 Santiago, Chile | 📧 contacto@maipogrande.cl | ☎ +56 2 1234 5678</p>
+    <div class="mt-2">
+      <a href="#" class="text-light me-3">Facebook</a>
+      <a href="#" class="text-light me-3">Instagram</a>
+      <a href="#" class="text-light">LinkedIn</a>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init();</script>
+</body>
+</html>

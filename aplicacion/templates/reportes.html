@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feria Virtual - Reportes</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Animaciones AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="{% static 'aplicacion/css/style.css' %}">
+</head>
+<body>
+
+  <!-- 🌟 Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-success" href="{% url 'index' %}">
+        <img src="{% static 'img/logo.png' %}" alt="Logo" width="40" class="me-2 logo"> Feria Virtual
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'productos' %}">Productos</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'ventas' %}">Ventas</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'subastas' %}">Subastas</a></li>
+          <li class="nav-item"><a class="nav-link active fw-bold" href="{% url 'reportes' %}">Reportes</a></li>
+        </ul>
+        <div class="d-flex">
+          <a href="{% url 'carrito' %}" class="btn btn-outline-success me-2">🛒</a>
+          <a href="login.html" class="btn btn-success">Login</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 📊 Reportes -->
+  <main class="pt-5 mt-4 container">
+    <h1 class="text-center mb-5 fw-bold text-success" data-aos="fade-up">Reportes y Estadísticas</h1>
+
+    <!-- KPIs -->
+    <div class="row text-center mb-5">
+      <div class="col-md-4 mb-3" data-aos="zoom-in">
+        <div class="card shadow-lg border-0 p-3 bg-light">
+          <h3 class="fw-bold text-success">120</h3>
+          <p>Pedidos Entregados</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3" data-aos="zoom-in">
+        <div class="card shadow-lg border-0 p-3 bg-light">
+          <h3 class="fw-bold text-warning">15%</h3>
+          <p>Pérdida de Fruta</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3" data-aos="zoom-in">
+        <div class="card shadow-lg border-0 p-3 bg-light">
+          <h3 class="fw-bold text-primary">$45M</h3>
+          <p>Total Ventas</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráficas -->
+    <div class="row">
+      <div class="col-md-6 mb-5" data-aos="fade-right">
+        <div class="card shadow-lg p-3">
+          <h5 class="fw-bold text-center mb-3">Ventas Locales vs Internacionales</h5>
+          <canvas id="chartVentas"></canvas>
+        </div>
+      </div>
+      <div class="col-md-6 mb-5" data-aos="fade-left">
+        <div class="card shadow-lg p-3">
+          <h5 class="fw-bold text-center mb-3">Pérdida de Fruta en el Tiempo</h5>
+          <canvas id="chartPerdida"></canvas>
+        </div>
+      </div>
+      <div class="col-md-12 mb-5" data-aos="fade-up">
+        <div class="card shadow-lg p-3">
+          <h5 class="fw-bold text-center mb-3">Costos de Transporte</h5>
+          <canvas id="chartCostos"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón de descarga -->
+    <div class="text-center mb-5">
+      <button class="btn btn-success btn-lg shadow">📄 Descargar Reporte PDF</button>
+    </div>
+  </main>
+
+  <!-- 🌱 Footer -->
+  <footer class="bg-dark text-light text-center py-4 mt-5">
+    <p class="mb-1">&copy; 2025 Feria Virtual - Maipo Grande</p>
+    <p class="mb-0">📍 Santiago, Chile | 📧 contacto@maipogrande.cl | ☎ +56 2 1234 5678</p>
+    <div class="mt-2">
+      <a href="#" class="text-light me-3">Facebook</a>
+      <a href="#" class="text-light me-3">Instagram</a>
+      <a href="#" class="text-light">LinkedIn</a>
+    </div>
+  </footer>
+
+  <!-- Bootstrap + AOS + Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    AOS.init();
+
+    // Chart Ventas
+    new Chart(document.getElementById('chartVentas'), {
+      type: 'bar',
+      data: {
+        labels: ['Enero', 'Febrero', 'Marzo', 'Abril'],
+        datasets: [
+          { label: 'Locales', data: [30, 50, 40, 60], backgroundColor: '#28a745' },
+          { label: 'Internacionales', data: [40, 60, 70, 90], backgroundColor: '#007bff' }
+        ]
+      }
+    });
+
+    // Chart Pérdida de fruta
+    new Chart(document.getElementById('chartPerdida'), {
+      type: 'line',
+      data: {
+        labels: ['Enero', 'Febrero', 'Marzo', 'Abril'],
+        datasets: [{
+          label: 'Pérdida (%)',
+          data: [10, 15, 12, 18],
+          borderColor: '#ffc107',
+          fill: false,
+          tension: 0.3
+        }]
+      }
+    });
+
+    // Chart Costos de transporte
+    new Chart(document.getElementById('chartCostos'), {
+      type: 'pie',
+      data: {
+        labels: ['Combustible', 'Peajes', 'Mantenimiento', 'Seguro'],
+        datasets: [{
+          data: [40, 20, 25, 15],
+          backgroundColor: ['#28a745', '#007bff', '#ffc107', '#dc3545']
+        }]
+      }
+    });
+  </script>
+</body>
+</html>

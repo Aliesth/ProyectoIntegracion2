@@ -1,0 +1,191 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Ventas - Feria Virtual</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'aplicacion/css/style.css' %}">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-success" href="{% url 'index' %}">
+        <img src="{% static 'img/logo.png' %}" alt="Logo" width="40" class="me-2"> Feria Virtual
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'productos' %}">Productos</a></li>
+          <li class="nav-item"><a class="nav-link active" href="{% url 'ventas' %}">Ventas</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'subastas' %}">Subastas</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'reportes' %}">Reportes</a></li>
+          <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+        </ul>
+        <div class="d-flex">
+          <a href="{% url 'carrito'%}" class="btn btn-outline-success me-2">🛒</a>
+          <a href="login.html" class="btn btn-success">Login</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Encabezado -->
+  <header class="py-5 bg-success text-white text-center mt-5">
+    <div class="container">
+      <h1 class="fw-bold">Gestión de Ventas</h1>
+      <p>Monitorea pedidos locales e internacionales en tiempo real</p>
+    </div>
+  </header>
+
+  <!-- Ventas Locales -->
+  <section class="container my-5">
+    <h2 class="text-success mb-4" data-aos="fade-up">📦 Ventas Locales</h2>
+    <div class="table-responsive" data-aos="zoom-in">
+      <table class="table table-striped text-center align-middle">
+        <thead class="table-success">
+          <tr>
+            <th>Pedido</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Cliente</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#L-001</td>
+            <td>Manzanas Rojas</td>
+            <td>100 Kg</td>
+            <td>Frutería San Juan</td>
+            <td><span class="badge bg-warning">En Bodega</span></td>
+          </tr>
+          <tr>
+            <td>#L-002</td>
+            <td>Uvas Blancas</td>
+            <td>50 Kg</td>
+            <td>Verduras del Sur</td>
+            <td><span class="badge bg-success">Entregado</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Línea de tiempo -->
+    <div class="timeline mt-5" data-aos="fade-up">
+      <h5 class="text-center mb-4">Flujo del Pedido</h5>
+      <ul class="list-inline d-flex justify-content-center">
+        <li class="list-inline-item mx-3 text-center">
+          <div class="circle bg-success text-white">1</div>
+          <p>Pendiente</p>
+        </li>
+        <li class="list-inline-item mx-3 text-center">
+          <div class="circle bg-warning text-dark">2</div>
+          <p>En Bodega</p>
+        </li>
+        <li class="list-inline-item mx-3 text-center">
+          <div class="circle bg-info text-white">3</div>
+          <p>En Transporte</p>
+        </li>
+        <li class="list-inline-item mx-3 text-center">
+          <div class="circle bg-success text-white">4</div>
+          <p>Entregado</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Ventas Internacionales -->
+  <section class="container my-5">
+    <h2 class="text-success mb-4" data-aos="fade-up">🌍 Ventas Internacionales</h2>
+    <div class="table-responsive" data-aos="zoom-in">
+      <table class="table table-striped text-center align-middle">
+        <thead class="table-success">
+          <tr>
+            <th>Pedido</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>País Destino</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#I-101</td>
+            <td>Peras Verdes</td>
+            <td>200 Kg</td>
+            <td>EE.UU.</td>
+            <td><span class="badge bg-info">En Transporte</span></td>
+          </tr>
+          <tr>
+            <td>#I-102</td>
+            <td>Duraznos</td>
+            <td>300 Kg</td>
+            <td>España</td>
+            <td><span class="badge bg-warning">En Bodega</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mapa de rutas -->
+    <div class="my-4 text-center" data-aos="zoom-in">
+      <h5>Mapa de Envíos Internacionales</h5>
+      <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3327.078404759395!2d-70.6483!3d-33.4569!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662c59c8ebfcae3%3A0xebb5dcac!2sPuerto%20de%20Valpara%C3%ADso!5e0!3m2!1ses!2scl!4v1700000000000"
+        width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy">
+      </iframe>
+    </div>
+  </section>
+
+  <!-- Resumen de Ventas -->
+  <section class="bg-light py-5">
+    <div class="container text-center">
+      <h2 class="mb-4 text-success" data-aos="fade-up">📊 Resumen</h2>
+      <div class="row g-4">
+        <div class="col-md-4" data-aos="fade-right">
+          <div class="p-4 shadow-sm bg-white rounded">
+            <h4>15</h4>
+            <p>Pedidos Activos</p>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up">
+          <div class="p-4 shadow-sm bg-white rounded">
+            <h4>30</h4>
+            <p>Pedidos Completados</p>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-left">
+          <div class="p-4 shadow-sm bg-white rounded">
+            <h4>5</h4>
+            <p>Pedidos en Tránsito</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-light text-center py-4 mt-5">
+    <p class="mb-1">&copy; 2025 Feria Virtual - Maipo Grande</p>
+    <p class="mb-0">📍 Santiago, Chile | 📧 contacto@maipogrande.cl | ☎ +56 2 1234 5678</p>
+    <div class="mt-2">
+      <a href="#" class="text-light me-3">Facebook</a>
+      <a href="#" class="text-light me-3">Instagram</a>
+      <a href="#" class="text-light">LinkedIn</a>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init();</script>
+</body>
+</html>

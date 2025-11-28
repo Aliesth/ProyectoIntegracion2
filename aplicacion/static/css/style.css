@@ -1,0 +1,312 @@
+/* --- Global: Paleta y Tipografía --- */
+
+/* La paleta se centra en el verde (#28a745) de Bootstrap 'success' */
+h1, h2, h3, .card-header {
+    /* Aplicar la fuente a todos los encabezados importantes */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Estilos de botones generales */
+.btn-success, .btn-primary {
+    border-radius: 30px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+/* Estilos para el botón btn-primary (usado en login/registro) */
+.btn-primary {
+    background-color: #28a745; /* Usa el color verde de éxito */
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #218838;
+}
+
+/* Estilos para botones outline-success */
+.btn-outline-success {
+    border-radius: 30px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-success:hover {
+    background-color: #28a745;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+.btn-lg {
+    border-radius: 30px;
+    padding: 10px 30px;
+    font-size: 1.1rem;
+}
+
+/* --- Layout: Navbar y Hero --- */
+
+/* Hero con imagen de fondo */
+.hero {
+    /* Asumo que la imagen de fondo está definida con un overlay en el HTML si es necesario */
+    background: url('../img/feria-bg.jpg') center/cover no-repeat;
+    height: 90vh;
+}
+
+/* Navbar */
+.navbar-brand {
+    font-size: 1.3rem;
+}
+
+/* --- Index/Productos: Tarjetas y Hover --- */
+
+/* Productos cards (Aplica a las imágenes destacadas del index) */
+/* Productos cards (Aplica a las imágenes destacadas del index) */
+.product-img {
+    height: 200px !important;
+    object-fit: cover !important;
+    border-bottom: 2px solid #28a745 !important;
+}
+
+/* Efecto hover general para las cards */
+.card:hover {
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+}
+
+/* Producto destacado del mes (Producto.html) */
+.card.border-success {
+    border: 2px solid #28a745 !important;
+}
+
+/* --- Index: Sección beneficios --- */
+
+/* Efecto hover para las cajas de beneficios */
+.bg-light .p-4 {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bg-light .p-4:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important; /* Añadido sombra al hacer hover */
+}
+
+/* --- Producto.html: Catálogo --- */
+
+/* Barra de búsqueda */
+input[type="text"] {
+    border: 2px solid #28a745;
+}
+
+/* --- Carrito.html --- */
+
+/* Estilo de tabla carrito */
+.table thead {
+    font-size: 1.1rem;
+}
+
+.table td input[type="number"] {
+    width: 70px;
+    margin: auto;
+    text-align: center;
+}
+
+/* Resumen del carrito */
+.bg-light.rounded {
+    border: 2px solid #28a745;
+}
+
+/* Botón eliminar (danger) */
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+.btn-danger:hover {
+    background-color: #b02a37;
+}
+
+/* --- Venta.html: Línea de Tiempo y Resumen --- */
+
+/* Línea de tiempo */
+.timeline .circle {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 50%;
+    display: inline-block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    /* Estilo adicional */
+    background-color: #28a745;
+    color: white;
+}
+
+/* El resumen de ventas ya usa el estilo de hover de las secciones de beneficios */
+
+/* --- Subasta.html --- */
+
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.card-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f3fdf5; /* Tono verde muy claro al pasar el mouse */
+}
+
+.list-group-item {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+}
+
+/* --- Reporte.html --- */
+
+.card {
+    border-radius: 15px;
+    border: none;
+}
+
+.card h5 {
+    font-size: 1.1rem;
+    color: #333;
+}
+
+canvas {
+    max-height: 300px;
+}
+
+/* --- Login y Registro --- */
+
+/* Fondo degradado suave */
+body {
+    background: linear-gradient(to right, #e8f5e9, #f1f8e9);
+}
+
+.card {
+    border-radius: 20px;
+    border: none;
+}
+
+.nav-tabs .nav-link {
+    font-weight: bold;
+    color: #555;
+    transition: all 0.3s;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #28a745;
+    color: #fff;
+}
+
+/* --- Nosotros.html: Estilos de contenido --- */
+
+.img-fluid {
+    max-width: 700px;
+    border: 3px solid #28a745;
+}
+
+/* Organigrama */
+.organigrama {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+}
+
+.organigrama ul {
+    padding-top: 20px; 
+    position: relative;
+    list-style: none;
+}
+
+.organigrama li {
+    float: left; 
+    text-align: center;
+    position: relative;
+    padding: 20px 5px 0 5px;
+}
+
+/* Conexiones horizontales y verticales */
+.organigrama li::before, .organigrama li::after {
+    content: '';
+    position: absolute; 
+    top: 0; 
+    right: 50%;
+    border-top: 2px solid #28a745;
+    width: 50%; 
+    height: 20px;
+}
+
+.organigrama li::after {
+    right: auto; 
+    left: 50%;
+    border-left: 2px solid #28a745;
+}
+
+.organigrama li:only-child::before, 
+.organigrama li:only-child::after {
+    display: none;
+}
+
+.organigrama li:only-child { 
+    padding-top: 0; 
+}
+
+.organigrama li span {
+    display: inline-block;
+    border: 2px solid #28a745;
+    padding: 10px 20px;
+    border-radius: 10px;
+    background: #f8f9fa;
+    font-weight: bold;
+    color: #333;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    white-space: nowrap; /* Evita que el texto del cargo se rompa */
+}
+
+.organigrama .boss {
+    background: #28a745;
+    color: white;
+}
+
+.catalogo {
+    display: grid;
+    /* Muestra 3 columnas de cards, ajusta a tu gusto */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+    gap: 20px;
+    padding: 20px;
+}
+
+.card-producto {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    background-color: white;
+}
+
+/* Estilos para la paginación */
+.paginacion {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.paginacion a, .paginacion .actual {
+    margin: 0 5px;
+    padding: 8px 12px;
+    border: 1px solid #007bff;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.paginacion .actual {
+    background-color: #007bff;
+    color: white;
+}
