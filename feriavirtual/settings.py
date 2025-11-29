@@ -13,6 +13,7 @@ import dj_database_url
 from pathlib import Path
 from django.contrib.messages import constants as messages
 import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -59,7 +60,7 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-ROOT_URLCONF = 'FeriaVirtual.urls'
+ROOT_URLCONF = 'feriavirtual.urls'
 
 TEMPLATES = [
     {
@@ -77,7 +78,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'FeriaVirtual.wsgi.application'
+WSGI_APPLICATION = 'feriavirtual.wsgi.application'
 
 
 # Database
