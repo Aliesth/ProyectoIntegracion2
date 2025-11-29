@@ -8,14 +8,13 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin 
 # Importaciones de Modelos y Formularios
-from .models import Fruta, Perfil
 from .forms import FrutaForm, RegistroForm, ContratoForm
 from .carrito import Cart
 from django.views.decorators.http import require_POST
 from django.shortcuts import redirect, get_object_or_404
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
-from .models import Pedido, DetallePedido, Fruta, Contrato
+from .models import Pedido, DetallePedido, Fruta, Contrato, Perfil
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render, redirect
 from django.contrib import messages

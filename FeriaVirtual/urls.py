@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from aplicacion import views
 from aplicacion.views import CatalogoFrutasView, FrutaGestionListView, FrutaCreateView, FrutaUpdateView, FrutaDeleteView # Importaciones adicionales
 from django.contrib.auth.decorators import user_passes_test # 👈 Importación NECESARIA
