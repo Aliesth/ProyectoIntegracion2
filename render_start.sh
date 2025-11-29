@@ -2,10 +2,10 @@
 set -e 
 
 echo "Corriendo Migraciones..."
+# Las migraciones se ejecutan desde la raíz.
 python manage.py migrate
 
-echo "Iniciando Gunicorn..."
-# 1. Aseguramos que la carpeta raíz esté en la ruta de Python
-export PYTHONPATH=$PWD:$PYTHONPATH
-# 2. Corremos Gunicorn usando el nombre exacto del módulo
-gunicorn FeriaVirtual.wsgi:application
+echo "Iniciando Gunicorn con CHDIR..."
+# Usamos --chdir para asegurarnos de que Python busque el módulo 
+# 'FeriaVirtual' desde el directorio raíz (que es donde está la carpeta 'FeriaVirtual').
+gunicorn --chdir . FeriaVirtual.wsgi:application
