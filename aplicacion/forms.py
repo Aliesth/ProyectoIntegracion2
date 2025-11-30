@@ -36,6 +36,22 @@ class RegistroForm(UserCreationForm):
             'password': forms.PasswordInput(attrs={'placeholder': 'Cree una contraseña', 'class': 'form-control'}),
             'password2': forms.PasswordInput(attrs={'placeholder': 'Confirme su contraseña', 'class': 'form-control'}),
         }
+class DireccionEnvioForm(forms.Form):
+    # O un CharField para la dirección completa
+    direccion_completa = forms.CharField(
+        max_length=300, 
+        label='Dirección de Envío Completa',
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    pais = forms.ChoiceField(
+        choices=[('CL', 'Chile'), ('OTRO', 'Otro País')],
+        label='País de Destino',
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
+
+
+
 
 class FrutaForm(forms.ModelForm):
     # Opcional: Puedes personalizar campos si lo necesitas
@@ -44,7 +60,7 @@ class FrutaForm(forms.ModelForm):
     class Meta:
         model = Fruta
         # Incluye todos los campos excepto 'id' (que es automático)
-        fields = ['nombre', 'descripcion', 'precio', 'stock', 'marca']
+        fields = ['nombre', 'descripcion', 'precio', 'stock', 'marca','imagen']
         # Opcional: Etiquetas personalizadas para los campos
         labels = {
             'nombre': 'Nombre de la Fruta',

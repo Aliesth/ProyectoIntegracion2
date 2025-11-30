@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.db import transaction
+from django import forms
 from django.contrib.auth.models import Group
 # Importaciones para las Class-Based Views
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView 
@@ -51,7 +52,7 @@ class FrutaGestionListView(LoginRequiredMixin, ListView):
 class FrutaCreateView(LoginRequiredMixin, CreateView):
     """(C - CREATE) Vista para crear un nuevo producto (Fruta)."""
     model = Fruta
-    form_class = FrutaForm 
+    form_class = FrutaForm # Usa la clase importada desde forms.py
     template_name = 'catalogo/fruta_form.html'
     success_url = reverse_lazy('catalogo_gestion') # Redirige al panel de gestión
 
@@ -120,6 +121,56 @@ def productos(request):
 def carrito(request):
     # Vista simple de página, ya no tiene lógica de sesión
     return render(request, 'carrito.html')
+
+@require_POST
+def eliminar_del_carrito(request, fruta_id):
+    """Elimina completamente un producto del carrito de la sesión."""
+    
+    # 1. Obtener el objeto Fruta
+    fruta = get_object_or_404(Fruta, id=fruta_id)
+    
+    # 2. Inicializar el carrito (carga desde la sesión)
+    carrito = Cart(request)
+    
+    # 3. Llamar al método de eliminación de la clase Cart
+    # Asumo que tu clase Cart tiene un método 'remove'
+    carrito.remove(fruta)
+    
+    # 4. Redirigir de nuevo a la página del carrito
+    return redirect('carrito')
+
+@require_POST
+def actualizar_carrito(request, fruta_id):
+    """
+    Actualiza la cantidad de una fruta en el carrito usando la acción
+    enviada por el formulario (incrementar o decrementar).
+    """
+    
+    fruta = get_object_or_404(Fruta, id=fruta_id)
+    carrito = Cart(request)
+    
+    # Asegúrate de que la fruta esté en el carrito para evitar errores
+    if str(fruta_id) not in carrito.cart:
+        return redirect('carrito')
+
+    # Determinar la acción y la cantidad actual
+    action = request.POST.get('action') # Viene del botón (+ o -)
+
+    if action == 'increment':
+        # Intenta añadir +1. El método add de la clase Cart debe manejar la actualización.
+        carrito.add(fruta=fruta, quantity=1, override_quantity=False) 
+        
+    elif action == 'decrement':
+        # Si la cantidad actual es mayor que 1, decrementa en 1.
+        if carrito.cart[str(fruta_id)]['quantity'] > 1:
+            # Para decrementar, llamamos a 'add' con cantidad negativa.
+            # (Esto requiere que el método add de tu clase Cart maneje cantidades negativas para restar)
+            carrito.add(fruta=fruta, quantity=-1, override_quantity=False)
+        else:
+            # Si la cantidad es 1 y el usuario presiona '-', lo eliminamos.
+            carrito.remove(fruta) # Asumiendo que existe el método remove
+            
+    return redirect('carrito')
 
 def subastas(request):
     return render(request, 'subastas.html')
@@ -227,45 +278,71 @@ def agregar_al_carrito(request, fruta_id):
     return redirect('catalogo_frutas')
 
 @login_required
-@transaction.atomic # Asegura que si algo falla, todo el proceso se revierte
+@transaction.atomic # Si algo falla (ej. stock), toda la BD se revierte
 def confirmar_pedido(request):
     carrito = Cart(request)
     
+    # Manejar si el carrito está vacío o la petición no es POST
     if not carrito:
-        # El carrito está vacío, no hay nada que guardar
+        messages.error(request, "No puedes confirmar un pedido con el carrito vacío.")
         return redirect('carrito') 
 
-    # 1. CREAR EL PEDIDO (Encabezado)
-    # Utilizamos request.user que es el objeto User de Django
-    nuevo_pedido = Pedido.objects.create(
-        usuario=request.user,
-        total_pedido=carrito.get_total_price() # Asumiendo que Cart tiene un método para calcular el total
-    )
-    
-    # 2. CREAR LOS DETALLES DEL PEDIDO e iterar sobre el carrito temporal
-    for item_id, item_data in carrito.cart.items():
-        fruta = Fruta.objects.get(id=item_id)
-        cantidad = item_data['quantity']
-        precio = float(item_data['price'])
+    if request.method == 'POST':
+        # 1. RECIBIR DATOS DEL FORMULARIO DE DIRECCIÓN (desde carrito.html)
+        direccion_recibida = request.POST.get('direccion_completa')
+        pais_code = request.POST.get('pais') # 'CL' o 'OTRO'
         
-        # Guardar cada línea de detalle
-        DetallePedido.objects.create(
-            pedido=nuevo_pedido,
-            fruta=fruta,
-            cantidad=cantidad,
-            precio_unitario=precio,
-            subtotal=(cantidad * precio)
+        if not direccion_recibida or not pais_code:
+            messages.error(request, "Por favor, completa la dirección y el país de envío.")
+            return redirect('carrito')
+
+        # 2. DETERMINAR EL TIPO DE ENVÍO
+        if pais_code == 'CL':
+            tipo_envio_final = 'Nacional'
+        else:
+            tipo_envio_final = 'Internacional'
+
+        # 3. CREAR EL PEDIDO (Encabezado)
+        nuevo_pedido = Pedido.objects.create(
+            usuario=request.user,
+            total_pedido=carrito.get_total_price(),
+            direccion_envio=direccion_recibida,
+            tipo_envio=tipo_envio_final
         )
+
+        # 4. CREAR LOS DETALLES DEL PEDIDO e iterar sobre el carrito
+        for item_id, item_data in carrito.cart.items():
+            fruta = Fruta.objects.get(id=item_id)
+            cantidad = item_data['quantity']
+            precio = float(item_data['price'])
+            
+            # 5. ACTUALIZAR EL STOCK antes de guardar el detalle (DENTRO de la transacción)
+            if fruta.stock < cantidad:
+                # Esto es una comprobación extra. Si falla, revierte la transacción.
+                raise ValueError(f"Stock insuficiente para {fruta.nombre}. Solo quedan {fruta.stock}.")
+
+            fruta.stock -= cantidad # 👈 Deducir la cantidad del stock
+            fruta.save()            # 👈 Guardar el stock actualizado
+            
+            # Guardar cada línea de detalle
+            DetallePedido.objects.create(
+                pedido=nuevo_pedido,
+                fruta=fruta,
+                cantidad=cantidad,
+                precio_unitario=precio,
+                subtotal=(cantidad * precio)
+            )
+
+        # 6. LIMPIAR EL CARRITO DE LA SESIÓN (solo si todo lo anterior tuvo éxito)
+        carrito.clear() 
+
+        messages.success(request, f"¡Pedido N°{nuevo_pedido.id} confirmado con éxito! Envío: {tipo_envio_final}.")
         
-        # 3. ACTUALIZAR EL STOCK (Crucial para cualquier sistema de inventario)
-        fruta.stock -= cantidad
-        fruta.save()
-
-    # 4. LIMPIAR EL CARRITO DE LA SESIÓN
-    carrito.clear() 
-
-    # Redirigir a una página de éxito o al historial de pedidos
-    return redirect('pedido_exitoso', pedido_id=nuevo_pedido.id)
+        # Redirigir a una página de éxito (asumiendo que tienes la URL 'pedido_exitoso')
+        return redirect('index')
+    
+    # Si la petición no es POST, redirigimos al carrito
+    return redirect('carrito')
 
 def pedido_exitoso(request, pedido_id):
     # Obtiene el pedido o devuelve un error 404 si no existe

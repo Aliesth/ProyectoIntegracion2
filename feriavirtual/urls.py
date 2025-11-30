@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls.static import static
+from django.conf import settings
 from aplicacion import views
 from aplicacion.views import CatalogoFrutasView, FrutaGestionListView, FrutaCreateView, FrutaUpdateView, FrutaDeleteView # Importaciones adicionales
 from django.contrib.auth.decorators import user_passes_test # 👈 Importación NECESARIA
@@ -18,6 +20,7 @@ urlpatterns = [
     path('', views.login_usuario, name='login_usuario'), 
     path('register/', views.registrar_usuario, name='register'),
     path('home/', views.index, name='index'), 
+
     
     # --- Rutas de Catálogo Públicas (Cliente) ---
     # La ruta 'productos/' ahora usa el ListView
@@ -49,10 +52,9 @@ urlpatterns = [
     # URL 3: (Opcional) Página de éxito después de la compra
     path('pedido-exitoso/<int:pedido_id>/', views.pedido_exitoso, name='pedido_exitoso'),
     path('carrito/', views.mostrar_carrito, name='carrito'),
-    # El <int:pedido_id> asegura que se pase el ID a la función pedido_exitoso.
+    path('carrito/eliminar/<int:fruta_id>/', views.eliminar_del_carrito, name='eliminar_del_carrito'),
+    path('carrito/actualizar/<int:fruta_id>/', views.actualizar_carrito, name='actualizar_carrito'),
     path('pedido-exitoso/<int:pedido_id>/', views.pedido_exitoso, name='pedido_exitoso'),
-    
-    # La vista de confirmación que llama a esta página (Pedido -> BD)
     path('confirmar-pedido/', views.confirmar_pedido, name='confirmar_pedido'),
     path('logout/', views.cerrar_sesion, name='logout'),
 
@@ -62,3 +64,6 @@ urlpatterns = [
     path('contratos/editar/<int:id>/', views.contrato_editar, name='contrato_editar'),
     path('contratos/eliminar/<int:id>/', views.contrato_eliminar, name='contrato_eliminar'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

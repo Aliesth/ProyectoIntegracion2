@@ -156,3 +156,8 @@ LOGIN_URL = 'login_usuario'
 if os.environ.get('RENDER'):
     DEBUG = False
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

@@ -31,7 +31,7 @@ class Fruta(models.Model):
     descripcion=models.TextField()
     precio=models.DecimalField(max_digits=10,decimal_places=2)
     stock=models.IntegerField()
-    #imagen=models.ImageField()
+    imagen = models.ImageField(upload_to='frutas/', null=True, blank=True)
     marca=models.CharField(max_length=300)
 
     def __str__(self):
@@ -48,11 +48,40 @@ class Pedido(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE) 
     fecha_pedido = models.DateTimeField(auto_now_add=True)
     total_pedido = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    TIPO_ENVIO_CHOICES = [
+        ('Nacional', 'Nacional'),
+        ('Internacional', 'Internacional'),
+    ]
     
+    # 1. Campo para la dirección completa (no puede ser nulo, por eso lleva default)
+    direccion_envio = models.CharField(
+        max_length=500, 
+        verbose_name='Dirección de Envío',
+        default='Dirección pendiente de registro' # Valor temporal para filas existentes/migración
+    )
+    
+    # 2. Campo para el tipo de envío, usando las opciones definidas
+    tipo_envio = models.CharField(
+        max_length=15, 
+        choices=TIPO_ENVIO_CHOICES, 
+        default='Nacional', # Valor por defecto
+        verbose_name='Tipo de Envío'
+    )
+    def __str__(self):
+        return f"Pedido #{self.id} de {self.usuario.username} ({self.tipo_envio})"
+    
+    # Campo para guardar la dirección completa
+    direccion_envio = models.CharField(max_length=500, verbose_name='Dirección de Envío')
+    
+    # Campo para guardar el resultado de la lógica (Nacional o Internacional)
+    tipo_envio = models.CharField(max_length=15, choices=TIPO_ENVIO_CHOICES, default='Nacional', verbose_name='Tipo de Envío')
+    
+    # Podrías agregar un campo de estado (ej: 'Pendiente', 'Enviado', 'Completado')
+    # estado = models.CharField(...)
     # Podrías agregar un campo de estado (ej: 'Pendiente', 'Enviado', 'Completado')
     
     def __str__(self):
-        return f"Pedido #{self.id} de {self.usuario.email}"
+        return f"Pedido #{self.id} de {self.usuario.email} ({self.tipo_envio})"
 
 # 2. MODELO DETALLEPEDIDO (Línea de producto)
 class DetallePedido(models.Model):
