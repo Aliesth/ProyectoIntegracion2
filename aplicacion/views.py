@@ -19,8 +19,12 @@ from .models import Pedido, DetallePedido, Fruta, Contrato, Perfil
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render, redirect
 from django.contrib import messages
-
+from decimal import Decimal
 # para de finir roles de usuario y usar decoradores
+
+TASA_ADUANA = Decimal('0.20') # 20% de aduana para internacional
+COSTO_BASE_ENVIO_NACIONAL = Decimal('5000.00') # Costo fijo para Chile
+COSTO_BASE_ENVIO_INTERNACIONAL = Decimal('8000.00') # Costo fijo para otros países
 
 def es_cliente(user):
     #verificar si es cliente
@@ -185,18 +189,52 @@ def nosotros(request):
     return render(request, 'nosotros.html')
 
 def mostrar_carrito(request):
-    # Inicializa el carrito, lo que lo carga de la sesión
     carrito = Cart(request)
     
+    # 1. Obtener el subtotal de los productos
+    # 🚨 CORRECCIÓN: Forzamos la conversión a Decimal para evitar errores de tipo. 🚨
+    try:
+        subtotal_sin_envio = Decimal(carrito.get_total_price())
+    except TypeError:
+        # Esto maneja si get_total_price devuelve None o algo que no se puede convertir
+        subtotal_sin_envio = Decimal('0.00')
+
+    # 2. DETERMINAR LA SELECCIÓN DE PAÍS (Lógica para capturar GET/POST correcta)
+    if request.method == 'POST':
+        tipo_envio_seleccionado = request.POST.get('pais', 'CL')
+    else:
+        tipo_envio_seleccionado = request.GET.get('pais', 'CL') 
+        
+    costo_envio = Decimal('0.00')
+    costo_aduana = Decimal('0.00')
+    total_final = subtotal_sin_envio
+    
+    # 3. LÓGICA DE CÁLCULO
+    if subtotal_sin_envio > Decimal('0.00'): # Usamos subtotal_sin_envio para la comprobación
+        
+        if tipo_envio_seleccionado == 'CL':
+            # Envío Nacional: Costo fijo
+            costo_envio = COSTO_BASE_ENVIO_NACIONAL
+            
+        elif tipo_envio_seleccionado == 'OTRO':
+            # Envío Internacional: Costo fijo más Aduana
+            costo_envio = COSTO_BASE_ENVIO_INTERNACIONAL
+            costo_aduana = subtotal_sin_envio * TASA_ADUANA
+            
+        # Calcular el total final
+        total_final = subtotal_sin_envio + costo_envio + costo_aduana
+        # Ahora que todas las variables son Decimals, la suma final es segura.
+
     context = {
-        # El iterador de la clase Cart (self._iter_()) 
-        # transforma los IDs en objetos Fruta y calcula subtotales.
         'carrito': carrito,
-        'total_general': carrito.get_total_price() # Usando el método que calcula el total
+        'subtotal_sin_envio': subtotal_sin_envio,
+        'costo_envio': costo_envio,
+        'costo_aduana': costo_aduana,
+        'total_final': total_final,
+        'tipo_envio': tipo_envio_seleccionado, # Para mantener la selección en el <select>
     }
     
     return render(request, 'carrito.html', context)
-
 # ----------------------------------------------------------------------
 # --- VISTAS DE AUTENTICACIÓN ---
 # ----------------------------------------------------------------------
@@ -278,80 +316,128 @@ def agregar_al_carrito(request, fruta_id):
     return redirect('catalogo_frutas')
 
 @login_required
-@transaction.atomic # Si algo falla (ej. stock), toda la BD se revierte
 def confirmar_pedido(request):
     carrito = Cart(request)
     
-    # Manejar si el carrito está vacío o la petición no es POST
     if not carrito:
         messages.error(request, "No puedes confirmar un pedido con el carrito vacío.")
         return redirect('carrito') 
 
     if request.method == 'POST':
-        # 1. RECIBIR DATOS DEL FORMULARIO DE DIRECCIÓN (desde carrito.html)
-        direccion_recibida = request.POST.get('direccion_completa')
-        pais_code = request.POST.get('pais') # 'CL' o 'OTRO'
+        try:
+            # Iniciamos la transacción aquí. Si algo falla dentro, se revierte.
+            with transaction.atomic():
+                # 1. RECIBIR DATOS DEL FORMULARIO DE DIRECCIÓN
+                direccion_recibida = request.POST.get('direccion_completa')
+                pais_code = request.POST.get('pais')
+                
+                if not direccion_recibida or not pais_code:
+                    messages.error(request, "Por favor, completa la dirección y el país de envío.")
+                    return redirect('carrito')
+
+                # 2. DETERMINAR EL TIPO DE ENVÍO Y COSTOS
+                if pais_code == 'CL':
+                    tipo_envio_final = 'Nacional'
+                    costo_envio = COSTO_BASE_ENVIO_NACIONAL
+                    costo_aduana = Decimal('0.00')
+                else:
+                    tipo_envio_final = 'Internacional'
+                    subtotal_productos = carrito.get_total_price()
+                    costo_envio = COSTO_BASE_ENVIO_INTERNACIONAL
+                    costo_aduana = subtotal_productos * TASA_ADUANA
+                
+                # 3. RECALCULAR EL TOTAL FINAL
+                total_a_cobrar = carrito.get_total_price() + costo_envio + costo_aduana
+                
+                # 4. CREAR EL PEDIDO (Encabezado)
+                nuevo_pedido = Pedido.objects.create(
+                    usuario=request.user,
+                    total_pedido=total_a_cobrar, 
+                    direccion_envio=direccion_recibida,
+                    tipo_envio=tipo_envio_final
+                )
+
+                # 5. CREAR LOS DETALLES DEL PEDIDO y ACTUALIZAR EL STOCK
+                for item_id, item_data in carrito.cart.items():
+                    fruta = get_object_or_404(Fruta, id=item_id)
+                    cantidad = item_data['quantity']
+                    precio = float(item_data['price'])
+                    
+                    # 5a. Comprobar y DEDUCIR EL STOCK
+                    if fruta.stock < cantidad:
+                        # 🚨 ¡ERROR DE STOCK! Esto fuerza la reversión de la transacción.
+                        messages.error(request, f"Stock insuficiente: Solo quedan {fruta.stock} unidades de {fruta.nombre}.")
+                        raise ValueError(f"Stock insuficiente para {fruta.nombre}.") 
+                    
+                    fruta.stock -= cantidad
+                    fruta.save()
+                    
+                    # 5b. Guardar cada línea de detalle
+                    DetallePedido.objects.create(
+                        pedido=nuevo_pedido,
+                        fruta=fruta,
+                        cantidad=cantidad,
+                        precio_unitario=precio,
+                        subtotal=(Decimal(cantidad) * Decimal(precio))
+                    )
+                
+                # 6. LIMPIAR EL CARRITO DE LA SESIÓN (Solo si la transacción fue exitosa)
+                carrito.clear() 
+
+                messages.success(request, f"¡Pedido N°{nuevo_pedido.id} confirmado con éxito! Envío: {tipo_envio_final}.")
+                
+                # 7. Redirigir a la página de éxito
+                return redirect('pedido_exitoso', pedido_id=nuevo_pedido.id)
         
-        if not direccion_recibida or not pais_code:
-            messages.error(request, "Por favor, completa la dirección y el país de envío.")
+        except ValueError:
+            # 🚨 Capturamos el ValueError (Stock Insuficiente) y redirigimos al carrito 🚨
+            # El mensaje de error ya fue añadido en el Paso 5a
+            return redirect('carrito')
+            
+        except Exception as e:
+             # Captura cualquier otro error durante la transacción (ej. DB, etc.)
+            messages.error(request, f"Ocurrió un error inesperado durante el checkout. Inténtalo de nuevo. Detalle: {e}")
             return redirect('carrito')
 
-        # 2. DETERMINAR EL TIPO DE ENVÍO
-        if pais_code == 'CL':
-            tipo_envio_final = 'Nacional'
-        else:
-            tipo_envio_final = 'Internacional'
-
-        # 3. CREAR EL PEDIDO (Encabezado)
-        nuevo_pedido = Pedido.objects.create(
-            usuario=request.user,
-            total_pedido=carrito.get_total_price(),
-            direccion_envio=direccion_recibida,
-            tipo_envio=tipo_envio_final
-        )
-
-        # 4. CREAR LOS DETALLES DEL PEDIDO e iterar sobre el carrito
-        for item_id, item_data in carrito.cart.items():
-            fruta = Fruta.objects.get(id=item_id)
-            cantidad = item_data['quantity']
-            precio = float(item_data['price'])
-            
-            # 5. ACTUALIZAR EL STOCK antes de guardar el detalle (DENTRO de la transacción)
-            if fruta.stock < cantidad:
-                # Esto es una comprobación extra. Si falla, revierte la transacción.
-                raise ValueError(f"Stock insuficiente para {fruta.nombre}. Solo quedan {fruta.stock}.")
-
-            fruta.stock -= cantidad # 👈 Deducir la cantidad del stock
-            fruta.save()            # 👈 Guardar el stock actualizado
-            
-            # Guardar cada línea de detalle
-            DetallePedido.objects.create(
-                pedido=nuevo_pedido,
-                fruta=fruta,
-                cantidad=cantidad,
-                precio_unitario=precio,
-                subtotal=(cantidad * precio)
-            )
-
-        # 6. LIMPIAR EL CARRITO DE LA SESIÓN (solo si todo lo anterior tuvo éxito)
-        carrito.clear() 
-
-        messages.success(request, f"¡Pedido N°{nuevo_pedido.id} confirmado con éxito! Envío: {tipo_envio_final}.")
-        
-        # Redirigir a una página de éxito (asumiendo que tienes la URL 'pedido_exitoso')
-        return redirect('index')
-    
     # Si la petición no es POST, redirigimos al carrito
     return redirect('carrito')
-
+@login_required
 def pedido_exitoso(request, pedido_id):
-    # Obtiene el pedido o devuelve un error 404 si no existe
+    # 1. Obtiene el pedido o devuelve un error 404 si no existe
     pedido = get_object_or_404(Pedido, id=pedido_id)
     
-    # Asegúrate de que el usuario que ve el pedido es el dueño
+    # 2. Asegúrate de que el usuario que ve el pedido es el dueño (Seguridad)
     if pedido.usuario != request.user:
-        # Aquí podrías redirigir o lanzar un error de permiso 403
         return redirect('index') 
+
+    # 3. Prepara los datos de contexto
+    detalles = pedido.detalles.all() 
+    
+    # PASO CRÍTICO: Cálculo del desglose en Python 
+    
+    # A. Sumar el subtotal de todos los productos (total de ítems sin envío)
+    # Usamos sum() sobre un generador para sumar los campos Decimal
+    total_productos_acumulado = sum(detalle.subtotal for detalle in detalles)
+
+    # B. Calcular el Costo de Envío y Aduana por diferencia
+    # total_guardado (en DB) - subtotal_productos (calculado ahora)
+    costo_envio_final = pedido.total_pedido - total_productos_acumulado
+    
+    # Aseguramos que los valores no sean negativos si hay algún error de cálculo
+    if costo_envio_final < Decimal('0.00'):
+        costo_envio_final = Decimal('0.00')
+
+    context = {
+        'titulo': 'Pedido Confirmado',
+        'pedido': pedido,
+        'detalles': detalles,
+        # PASAMOS LAS VARIABLES AL CONTEXTO 
+        'total_productos_acumulado': total_productos_acumulado,
+        'costo_envio_final': costo_envio_final, 
+    }
+    
+    # 4. Renderiza la plantilla
+    return render(request, 'pedido_exitoso.html', context)
 
     context = {
         'pedido': pedido,
@@ -361,7 +447,6 @@ def pedido_exitoso(request, pedido_id):
     
     # Asegúrate de crear este template: aplicacion/templates/pedido_exitoso.html
     return render(request, 'pedido_exitoso.html', context)
-
 
 
 #Vista para contratos de transportes

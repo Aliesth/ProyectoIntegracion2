@@ -10,20 +10,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='fruta',
-            name='imagen',
-            field=models.ImageField(blank=True, null=True, upload_to='frutas/'),
-        ),
-        migrations.AddField(
-            model_name='pedido',
-            name='direccion_envio',
-            field=models.CharField(default='Direccion no especificada (Pre-migracion)', max_length=500, verbose_name='Dirección de Envío'),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name='pedido',
-            name='tipo_envio',
-            field=models.CharField(choices=[('Nacional', 'Nacional'), ('Internacional', 'Internacional')], default='Nacional', max_length=15, verbose_name='Tipo de Envío'),
-        ),
+        
+       
+        
     ]

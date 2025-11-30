@@ -1,50 +1,128 @@
-{% extends "index.html" %}  {% load static %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Pedido - Feria Virtual</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'aplicacion/css/style.css' %}"> 
+    <style>
+        .table thead th {
+            background-color: #28a745 !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
 
-{% block content %}
-<div class="container my-5">
-    <div class="card shadow-lg border-success">
-        <div class="card-header bg-success text-white text-center">
-            <h1 class="mb-0">✅ ¡Pedido Enviado con Éxito!</h1>
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-success" href="{% url 'index' %}">
+            <img src="{% static 'img/logo.png' %}" alt="Logo Feria Virtual" width="40" class="me-2"> Feria Virtual
+        </a>
+    </div>
+</nav>
+<main>
+    <header class="py-4 bg-success text-white text-center mt-5">
+        <div class="container">
+            <h1 class="fw-bold">Confirmación de Pedido</h1>
+            <p class="lead">Tu orden ha sido procesada con éxito. ¡Gracias por tu compra!</p>
         </div>
-        <div class="card-body p-4">
-            <h4 class="card-title text-success">Resumen de la Orden #{{ pedido.id }}</h4>
-            <p><strong>Fecha del Pedido:</strong> {{ pedido.fecha_pedido|date:"d M Y H:i" }}</p>
-            <p><strong>Cliente:</strong> {{ pedido.usuario.first_name }} {{ pedido.usuario.last_name }} ({{ pedido.usuario.email }})</p>
-            
-            <hr>
+    </header>
 
-            <h5>Artículos Comprados:</h5>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Fruta</th>
-                        <th>Cantidad</th>
-                        <th>Precio Unitario</th>
-                        <th>Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {# Iteramos sobre los detalles (DetallePedido) que nos pasó la vista #}
-                    {% for detalle in detalles %}
-                    <tr>
-                        <td>{{ detalle.fruta.nombre }}</td>
-                        <td>{{ detalle.cantidad }}</td>
-                        <td>${{ detalle.precio_unitario }}</td>
-                        <td>${{ detalle.subtotal }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            
-            <hr>
-            
-            <h4 class="text-end text-danger">Total Final del Pedido: **${{ pedido.total_pedido }}**</h4>
-            
-            <div class="mt-4 text-center">
-                <a href="{% url 'catalogo_frutas' %}" class="btn btn-outline-success me-3">Seguir Comprando</a>
-                <a href="{% url 'index' %}" class="btn btn-primary">Volver al Inicio</a>
+    <div class="container my-5">
+        <div class="card shadow-lg border-success">
+            <div class="card-header bg-success text-white text-center">
+                <h1 class="mb-0">✅ ¡Pedido Enviado con Éxito!</h1>
+            </div>
+            <div class="card-body p-4">
+                <h4 class="card-title text-success">Resumen de la Orden #{{ pedido.id }}</h4>
+                <p><strong>Fecha del Pedido:</strong> {{ pedido.fecha_pedido|date:"d M Y H:i" }}</p>
+                <p><strong>Cliente:</strong> {{ pedido.usuario.first_name }} {{ pedido.usuario.last_name }} ({{ pedido.usuario.email }})</p>
+                
+                <hr>
+
+                <h5>Detalles de Envío</h5>
+                <div class="alert alert-light border p-3 mb-4">
+                    <p class="mb-1"><strong>Tipo de Envío:</strong> <span class="badge bg-success">{{ pedido.tipo_envio }}</span></p>
+                    <p class="mb-1"><strong>Dirección:</strong> {{ pedido.direccion_envio }}</p>
+                </div>
+
+                <h5>Artículos Comprados:</h5>
+                <div class="table-responsive mb-4">
+                    <table class="table table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Fruta</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unitario</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detalle in detalles %}
+                            <tr>
+                                <td>{{ detalle.fruta.nombre }}</td>
+                                <td>{{ detalle.cantidad }}</td>
+                                <td>${{ detalle.precio_unitario|floatformat:2 }}</td>
+                                <td>${{ detalle.subtotal|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <hr>
+                
+                <div class="row justify-content-end">
+                    <div class="col-md-7">
+                        <h5 class="text-secondary text-end">Cálculo del Total</h5>
+                        <table class="table table-sm table-borderless">
+                            <tbody>
+                                <tr class="fw-bold">
+                                    <td class="text-end">Subtotal Productos:</td>
+                                    <td class="text-end text-dark">
+                                        ${{ total_productos_acumulado|floatformat:2 }}
+                                    </td>
+                                </tr>
+
+                                <tr class="text-primary">
+                                    <td class="text-end">Costo de Envío y Aduana:</td>
+                                    <td class="text-end">+ ${{ costo_envio_final|floatformat:2 }}</td>
+                                </tr>
+                                
+                                <tr class="fw-bold border-top border-dark">
+                                    <td class="text-end">TOTAL PAGADO:</td>
+                                    <td class="text-end text-success fs-4">${{ pedido.total_pedido|floatformat:2 }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <a href="{% url 'catalogo_frutas' %}" class="btn btn-outline-success me-3">Seguir Comprando</a>
+                    <a href="{% url 'index' %}" class="btn btn-primary">Volver al Inicio</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
+</main>
+
+<footer class="bg-dark text-light text-center py-4 mt-5">
+    <p class="mb-1">© 2025 Feria Virtual - Maipo Grande</p>
+    <p class="mb-0">📍 Santiago, Chile | 📧 contacto@maipogrande.cl | ☎ +56 2 1234 5678</p>
+    <div class="mt-2">
+        <a href="#" class="text-light me-3">Facebook</a>
+        <a href="#" class="text-light me-3">Instagram</a>
+        <a href="#" class="text-light">LinkedIn</a>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init();</script>
+</body>
+</html>

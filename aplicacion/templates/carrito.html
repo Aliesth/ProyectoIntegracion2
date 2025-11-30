@@ -39,16 +39,22 @@
                 <li class="nav-item"><a class="nav-link" href="{% url 'subastas' %}">Subastas</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'reportes' %}">Reportes</a></li>
             </ul>
+
             <div class="d-flex align-items-center gap-2">
                 <a href="{% url 'carrito' %}" class="btn btn-outline-success me-2">🛒 Carrito</a> 
-                <a href="{% url 'login_usuario' %}" class="btn btn-success">Login</a>
+                
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Cerrar Sesión</a>
+                {% else %}
+                    <a href="{% url 'login_usuario' %}" class="btn btn-primary btn-sm">Login</a>
+                {% endif %}
             </div>
-        </div>
+            </div>
     </div>
 </nav>
 
 <main class="container py-5 mt-5">
-    <h2 class="my-4 text-center fw-bold">Tu Carrito de Compras 🧺</h2>
+    <h2 class="my-4 text-center fw-bold">Tu Carrito de Compras </h2>
     <hr class="mb-5">
 
     {% if carrito %}
@@ -86,13 +92,13 @@
                                 </button>
                                 
                                 <input type="number" 
-                                       name="quantity" 
-                                       value="{{ item.quantity }}" 
-                                       min="1" 
-                                       max="{{ item.fruta.stock }}" 
-                                       class="form-control form-control-sm text-center" 
-                                       style="width: 60px;"
-                                       readonly>
+                                    name="quantity" 
+                                    value="{{ item.quantity }}" 
+                                    min="1" 
+                                    max="{{ item.fruta.stock }}" 
+                                    class="form-control form-control-sm text-center" 
+                                    style="width: 60px;"
+                                    readonly>
                                 
                                 <button type="submit" name="action" value="increment" class="btn btn-sm btn-outline-success ms-1" title="Aumentar cantidad">
                                     &plus;
@@ -103,7 +109,6 @@
                         <td class="text-end">${{ item.price|floatformat:2 }}</td>
                         <td class="text-end fw-bold text-success">${{ item.total_price|floatformat:2 }}</td>
                         
-                        <!-- 🚨 COLUMNA ELIMINAR CORREGIDA: Usa formulario POST 🚨 -->
                         <td class="text-center">
                             <form action="{% url 'eliminar_del_carrito' item.fruta.id %}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar {{ item.fruta.nombre }} del carrito?');">
                                 {% csrf_token %}
@@ -121,34 +126,70 @@
         </div>
 
         <div class="card shadow-lg p-4 bg-white">
-            <h4 class="text-success mb-3">Información de Envío</h4>
+            <h4 class="text-success mb-3">Información de Envío y Costos</h4>
+            
+            <form action="{% url 'carrito' %}" method="GET" id="form-calculo"> 
+                {% csrf_token %}
+                <div class="row g-3 mb-4 justify-content-end">
+                    <div class="col-md-3">
+                        <label for="id_pais_calc" class="form-label">País</label>
+                        <select id="id_pais_calc" name="pais" class="form-select" required onchange="this.form.submit()"> 
+                            <option value="CL" {% if tipo_envio == 'CL' %}selected{% endif %}>Chile (Nacional)</option>
+                            <option value="OTRO" {% if tipo_envio == 'OTRO' %}selected{% endif %}>Otro País (Internacional)</option>
+                        </select>
+                    </div>
+                </div>
+                </form>
+            <div class="row justify-content-end mb-4 pt-3 border-top">
+                <div class="col-md-6">
+                    <table class="table table-borderless table-sm">
+                        <tbody>
+                            <tr>
+                                <td class="text-start">Subtotal (Productos):</td>
+                                <td class="text-end fw-bold">${{ subtotal_sin_envio|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start">Costo de Envío:</td>
+                                <td class="text-end text-primary">+ ${{ costo_envio|floatformat:2 }}</td>
+                            </tr>
+                            {% if costo_aduana > 0 %}
+                            <tr>
+                                <td class="text-start text-danger">Aduana (Impuesto):</td>
+                                <td class="text-end text-danger">+ ${{ costo_aduana|floatformat:2 }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr class="border-top border-dark fw-bold fs-5">
+                                <td class="text-start">TOTAL FINAL:</td>
+                                <td class="text-end text-success">${{ total_final|floatformat:2 }}</td> 
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             
             <form action="{% url 'confirmar_pedido' %}" method="POST">
                 {% csrf_token %}
 
                 <div class="row g-3 mb-4">
                     <div class="col-md-9">
-                        <label for="id_direccion_completa" class="form-label">Dirección de Envío</label>
-                        <input type="text" id="id_direccion_completa" name="direccion_completa" class="form-control" placeholder="Calle, número, comuna, ciudad" required>
+                        <label for="id_direccion_final" class="form-label">Dirección de Envío</label>
+                        <input type="text" id="id_direccion_final" name="direccion_completa" class="form-control" placeholder="Calle, número, comuna, ciudad" required>
                     </div>
                     <div class="col-md-3">
-                        <label for="id_pais" class="form-label">País</label>
-                        <select id="id_pais" name="pais" class="form-select" required>
-                            <option value="CL">Chile (Nacional)</option>
-                            <option value="OTRO">Otro País (Internacional)</option>
-                        </select>
+                        <label class="form-label">País Seleccionado</label>
+                        <p class="form-control-plaintext fw-bold mt-0">{{ tipo_envio }}</p> 
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-end align-items-center pt-3 border-top">
-                    <h3 class="me-4">Total a Pagar: <span class="text-success fw-bold">${{ total_general|floatformat:2 }}</span></h3>
-                    
+                <input type="hidden" name="pais" value="{{ tipo_envio }}"> 
+                
+                <div class="d-flex justify-content-end align-items-center pt-3">
                     <button type="submit" class="btn btn-lg btn-success shadow">
                         Enviar y Confirmar Pedido →
                     </button>
                 </div>
             </form>
-        </div>
+            </div>
         
         {% else %}
         <div class="alert alert-info text-center mt-5 p-4" role="alert">
