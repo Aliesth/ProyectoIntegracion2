@@ -53,8 +53,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.middleware.security.SecurityMiddleware',    
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -146,8 +146,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 # Directorio donde Django recolectará todos los archivos estáticos
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATIC_URL = 'static/'
-
+STATIC_URL = '/static/'
+# Directorios adicionales donde Django buscará archivos estáticos (p. ej. la carpeta static/ raíz)
+STATICFILES_DIRS = [
+    # Si tienes una carpeta 'static' en el nivel del proyecto, descomenta/usa esto:
+    # BASE_DIR / 'static', 
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
