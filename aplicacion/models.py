@@ -6,11 +6,11 @@ from django.contrib.auth.models import User
 
 
 class Rol(models.TextChoices):
-    ADMINISTRADOR = 'Administrador', _('administrador')
+    #ADMINISTRADOR = 'Administrador', _('administrador')
     productor = 'productor', _('productor') # Cambiado a 'Productor' según tu select
     cliente = 'cliente', _('cliente')
-    TRANSPORTISTA = 'TRANSPORTISTA', _('Transportista')
-    CONSULTOR = 'CONSULTOR', _('Consultor')
+    #TRANSPORTISTA = 'TRANSPORTISTA', _('Transportista')
+    #CONSULTOR = 'CONSULTOR', _('Consultor')
 
 
 class Perfil(models.Model):
