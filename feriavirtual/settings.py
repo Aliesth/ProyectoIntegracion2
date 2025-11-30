@@ -175,10 +175,3 @@ CLOUDINARY_STORAGE = {
 # 2. Establecer Cloudinary como el sistema de almacenamiento por defecto para archivos subidos (MEDIA)
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# Configuration       
-cloudinary.config( 
-    cloud_name = "dyhnocz8o", 
-    api_key = "134886788856185", 
-    api_secret = "<your_api_secret>", # Click 'View API Keys' above to copy your API secret
-    secure=True
-)
