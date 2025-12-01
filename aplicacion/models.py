@@ -4,7 +4,7 @@ from django.urls import reverse
 from datetime import date
 from django.contrib.auth.models import User
 from decimal import Decimal
-
+from cloudinary.models import CloudinaryField
 
 class Rol(models.TextChoices):
     #ADMINISTRADOR = 'Administrador', _('administrador')
@@ -33,7 +33,8 @@ class Fruta(models.Model):
     descripcion=models.TextField()
     precio=models.DecimalField(max_digits=10,decimal_places=2)
     stock=models.IntegerField()
-    imagen = models.ImageField(upload_to='frutas/', null=True, blank=True)
+    #imagen = models.ImageField(upload_to='frutas/', null=True, blank=True)
+    imagen = CloudinaryField('image', null=True, blank=True)
     marca=models.CharField(max_length=300)
     class Meta:
         ordering = ['nombre']
