@@ -7,7 +7,7 @@
     <title>Tu Carrito de Compras - Feria Virtual</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
         .cart-img {
             width: 60px;
@@ -57,6 +57,18 @@
     <h2 class="my-4 text-center fw-bold">Tu Carrito de Compras </h2>
     <hr class="mb-5">
 
+    {% if messages %}
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-10">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <span class="fw-bold">{{ message }}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
     {% if carrito %}
         <div class="table-responsive shadow-lg p-3 bg-white rounded mb-5">
             <table class="table table-striped table-hover align-middle">
@@ -113,8 +125,8 @@
                             <form action="{% url 'eliminar_del_carrito' item.fruta.id %}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar {{ item.fruta.nombre }} del carrito?');">
                                 {% csrf_token %}
                                 <button type="submit" 
-                                        class="btn btn-sm btn-danger" 
-                                        title="Eliminar ítem">
+                                            class="btn btn-sm btn-danger" 
+                                            title="Eliminar ítem">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </form>
@@ -128,90 +140,4 @@
         <div class="card shadow-lg p-4 bg-white">
             <h4 class="text-success mb-3">Información de Envío y Costos</h4>
             
-            <form action="{% url 'carrito' %}" method="GET" id="form-calculo"> 
-                {% csrf_token %}
-                <div class="row g-3 mb-4 justify-content-end">
-                    <div class="col-md-3">
-                        <label for="id_pais_calc" class="form-label">País</label>
-                        <select id="id_pais_calc" name="pais" class="form-select" required onchange="this.form.submit()"> 
-                            <option value="CL" {% if tipo_envio == 'CL' %}selected{% endif %}>Chile (Nacional)</option>
-                            <option value="OTRO" {% if tipo_envio == 'OTRO' %}selected{% endif %}>Otro País (Internacional)</option>
-                        </select>
-                    </div>
-                </div>
-                </form>
-            <div class="row justify-content-end mb-4 pt-3 border-top">
-                <div class="col-md-6">
-                    <table class="table table-borderless table-sm">
-                        <tbody>
-                            <tr>
-                                <td class="text-start">Subtotal (Productos):</td>
-                                <td class="text-end fw-bold">${{ subtotal_sin_envio|floatformat:2 }}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">Costo de Envío:</td>
-                                <td class="text-end text-primary">+ ${{ costo_envio|floatformat:2 }}</td>
-                            </tr>
-                            {% if costo_aduana > 0 %}
-                            <tr>
-                                <td class="text-start text-danger">Aduana (Impuesto):</td>
-                                <td class="text-end text-danger">+ ${{ costo_aduana|floatformat:2 }}</td>
-                            </tr>
-                            {% endif %}
-                            <tr class="border-top border-dark fw-bold fs-5">
-                                <td class="text-start">TOTAL FINAL:</td>
-                                <td class="text-end text-success">${{ total_final|floatformat:2 }}</td> 
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <form action="{% url 'confirmar_pedido' %}" method="POST">
-                {% csrf_token %}
-
-                <div class="row g-3 mb-4">
-                    <div class="col-md-9">
-                        <label for="id_direccion_final" class="form-label">Dirección de Envío</label>
-                        <input type="text" id="id_direccion_final" name="direccion_completa" class="form-control" placeholder="Calle, número, comuna, ciudad" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">País Seleccionado</label>
-                        <p class="form-control-plaintext fw-bold mt-0">{{ tipo_envio }}</p> 
-                    </div>
-                </div>
-
-                <input type="hidden" name="pais" value="{{ tipo_envio }}"> 
-                
-                <div class="d-flex justify-content-end align-items-center pt-3">
-                    <button type="submit" class="btn btn-lg btn-success shadow">
-                        Enviar y Confirmar Pedido →
-                    </button>
-                </div>
-            </form>
-            </div>
-        
-        {% else %}
-        <div class="alert alert-info text-center mt-5 p-4" role="alert">
-            <p class="lead mb-0">El carrito de compras está vacío. 😕</p>
-            <a href="{% url 'productos' %}" class="btn btn-outline-primary mt-3">Ver Catálogo</a>
-        </div>
-    {% endif %}
-</main>
-
-
-<footer class="bg-dark text-light text-center py-4 mt-5">
-    <p class="mb-1">&copy; 2025 Feria Virtual - Maipo Grande</p>
-    <p class="mb-0">📍 Santiago, Chile | 📧 contacto@maipogrande.cl | ☎ +56 2 1234 5678</p>
-    <div class="mt-2">
-        <a href="#" class="text-light me-3">Facebook</a>
-        <a href="#" class="text-light me-3">Instagram</a>
-        <a href="#" class="text-light">LinkedIn</a>
-    </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>AOS.init();</script>
-</body>
-</html>
+            <form action="{% url
