@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from datetime import date
 from django.contrib.auth.models import User
+from decimal import Decimal
 
 
 class Rol(models.TextChoices):
@@ -53,7 +54,9 @@ class Pedido(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE) 
     fecha_pedido = models.DateTimeField(auto_now_add=True)
     total_pedido = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    
+    TASA_ADUANA = Decimal('0.20') # 20% de aduana para internacional
+    COSTO_BASE_ENVIO_NACIONAL = Decimal('5000.00') # Costo fijo para Chile
+    COSTO_BASE_ENVIO_INTERNACIONAL = Decimal('8000.00') # Costo fijo para otros países
     # --- DEFINICIONES DE OPCIONES ---
     TIPO_ENVIO_CHOICES = [
         ('Nacional', 'Nacional'),
