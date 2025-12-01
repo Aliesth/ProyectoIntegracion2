@@ -1,11 +1,14 @@
-# aplicacion/carrito.py
-
 from decimal import Decimal
 from django.conf import settings
-from aplicacion.models import Fruta 
-# ... (otras partes de la clase Cart)
+from aplicacion.models import Fruta # Importamos tu modelo Fruta
 
-def __iter__(self):
+
+class Cart:
+    """
+    Una clase simple para gestionar el carrito de compras, 
+    almacenado en la sesión del usuario.
+    """
+    def __iter__(self):
         """
         Itera sobre los ítems del carrito y obtiene los objetos Fruta de la BD.
         Maneja errores si la Fruta ya no existe en la BD.
