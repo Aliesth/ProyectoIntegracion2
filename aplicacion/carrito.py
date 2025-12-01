@@ -1,93 +1,49 @@
+# aplicacion/carrito.py
+
 from decimal import Decimal
 from django.conf import settings
-from aplicacion.models import Fruta # Importamos tu modelo Fruta
+from aplicacion.models import Fruta 
+# ... (otras partes de la clase Cart)
 
-
-class Cart:
-    """
-    Una clase simple para gestionar el carrito de compras, 
-    almacenado en la sesión del usuario.
-    """
-    def __init__(self, request):
-        """
-        Inicializa el carrito.
-        """
-        self.session = request.session
-        # Intenta obtener el carrito de la sesión. Si no existe, crea un diccionario vacío.
-        cart = self.session.get(settings.CART_SESSION_ID) 
-        if not cart:
-            # Guarda un carrito vacío en la sesión
-            cart = self.session[settings.CART_SESSION_ID] = {}
-        self.cart = cart
-
-    def add(self, fruta, quantity=1, override_quantity=False):
-        """
-        Añade un producto al carrito o actualiza su cantidad.
-        """
-        fruta_id = str(fruta.id)
-        
-        # Si la fruta no está en el carrito, la inicializamos
-        if fruta_id not in self.cart:
-            self.cart[fruta_id] = {
-                'quantity': 0,
-                # Usamos 'precio' para coincidir con tu modelo Fruta
-                'price': str(fruta.precio) 
-            }
-            
-        if override_quantity:
-            self.cart[fruta_id]['quantity'] = quantity
-        else:
-            self.cart[fruta_id]['quantity'] += quantity
-        
-        self.save()
-
-    def save(self):
-        """
-        Marca la sesión como 'modificada' para asegurar que se guarde.
-        """
-        self.session.modified = True
-
-    def remove(self, fruta):
-        """
-        Elimina la fruta del carrito.
-        """
-        fruta_id = str(fruta.id)
-        if fruta_id in self.cart:
-            del self.cart[fruta_id]
-            self.save()
-
-    def __iter__(self):
+def __iter__(self):
         """
         Itera sobre los ítems del carrito y obtiene los objetos Fruta de la BD.
+        Maneja errores si la Fruta ya no existe en la BD.
         """
         fruta_ids = self.cart.keys()
-        # Obtener los objetos Fruta y convertirlos en un diccionario
-        frutas = Fruta.objects.filter(id__in=fruta_ids)
+        
+        # 1. Obtener todos los objetos Fruta que existen en la BD
+        frutas_objects = Fruta.objects.filter(id__in=fruta_ids)
+        
+        # Crear un mapa {id_fruta: objeto_fruta} para búsqueda rápida
+        frutas_map = {str(fruta.id): fruta for fruta in frutas_objects}
+        
         cart = self.cart.copy()
         
-        for fruta in frutas:
-            cart[str(fruta.id)]['fruta'] = fruta # Añade el objeto Fruta al diccionario del item
+        for fruta_id in list(cart.keys()): # Iterar sobre una lista de IDs
+            if fruta_id not in frutas_map:
+                # 💡 CORRECCIÓN: Si la fruta se eliminó de la BD, la quitamos del carrito de sesión.
+                del cart[fruta_id]
+                self.remove(Fruta(id=fruta_id)) # Llama a remove para guardar el cambio en sesión
+                continue 
 
-        for item in cart.values():
-            item['price'] = Decimal(item['price'])
+            item = cart[fruta_id]
+            item['fruta'] = frutas_map[fruta_id] # Asigna el objeto Fruta
+            
+            # 💡 CORRECCIÓN: Manejar errores de conversión a Decimal
+            try:
+                # Asegura que item['price'] es una cadena de número antes de convertir
+                price_str = item.get('price', '0')
+                if price_str is None or price_str == '':
+                    price_str = '0'
+                    
+                item['price'] = Decimal(price_str)
+            except:
+                # Si falla la conversión (raro, pero posible), asumimos 0
+                item['price'] = Decimal('0')
+                
             item['total_price'] = item['price'] * item['quantity']
+            
             yield item
 
-    def __len__(self):
-        """
-        Retorna la cantidad total de ítems en el carrito.
-        """
-        return sum(item['quantity'] for item in self.cart.values())
-
-    def get_total_price(self):
-        """
-        Calcula el costo total de los artículos en el carrito.
-        """
-        return sum(Decimal(item['price']) * item['quantity'] for item in self.cart.values())
-
-    def clear(self):
-        """
-        Vacía el carrito de la sesión.
-        """
-        del self.session[settings.CART_SESSION_ID]
-        self.save()
+# ... (otras partes de la clase Cart)
