@@ -41,14 +41,13 @@ if RENDER_EXTERNAL_HOSTNAME:
 
 INSTALLED_APPS = [
     'django.contrib.admin',
-    'django.contrib.auth',
-    'cloudinary_storage', # Nuevo
+    'django.contrib.auth',     # Nuevo
     'cloudinary',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    
-    'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',    
+    'django.contrib.messages',    
     'aplicacion'
 ]
 
@@ -168,7 +167,7 @@ if os.environ.get('RENDER'):
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # 1. Configuración de Cloudinary (toma los valores de las variables de entorno de Render)
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
@@ -178,4 +177,4 @@ CLOUDINARY_STORAGE = {
 
 # 2. Establecer Cloudinary como el sistema de almacenamiento por defecto para archivos subidos (MEDIA)
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
