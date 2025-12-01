@@ -184,10 +184,15 @@ CLOUDINARY_STORAGE = {
     'API_KEY': os.getenv("CLOUDINARY_API_KEY"),
     'API_SECRET': os.getenv("CLOUDINARY_API_SECRET"),
     'SECURE': True,
+    
 }
-
+CLOUDINARY_CLOUD_NAME = os.getenv("CLOUDINARY_CLOUD_NAME")
+CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY")
+CLOUDINARY_API_SECRET = os.getenv("CLOUDINARY_API_SECRET")
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
+print("Cloud name:", CLOUDINARY_CLOUD_NAME)
+print("API KEY:", CLOUDINARY_API_KEY)
+print("API SECRET:", CLOUDINARY_API_SECRET)
 # 2. Establecer Cloudinary como el sistema de almacenamiento por defecto para archivos subidos (MEDIA)
 #DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
