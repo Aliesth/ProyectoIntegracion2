@@ -8,12 +8,7 @@ class Migration(migrations.Migration):
 
     operations = [
         # Ejemplo: agregar un nuevo campo
-        migrations.AddField(
-            model_name='pedido',
-            name='direccion_envio',
-            field=models.CharField(default='DIRECCION_NO_APLICADA', max_length=500, verbose_name='Dirección de Envío'),
-            preserve_default=False,
-        ),
+      
         # Ejemplo: modificar un campo existente
         migrations.AddField(
             model_name='pedido',
