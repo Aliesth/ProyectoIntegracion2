@@ -99,6 +99,57 @@ class Pedido(models.Model):
     def __str__(self):
         return f"Pedido #{self.id} de {self.usuario.username} ({self.estado})"
     
+
+
+class Pedidos(models.Model):
+    # --- CAMPOS BASE ---
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE) 
+    fecha_pedido = models.DateTimeField(auto_now_add=True)
+    total_pedido = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    TASA_ADUANA = Decimal('0.20') # 20% de aduana para internacional
+    COSTO_BASE_ENVIO_NACIONAL = Decimal('5000.00') # Costo fijo para Chile
+    COSTO_BASE_ENVIO_INTERNACIONAL = Decimal('8000.00') # Costo fijo para otros países
+    # --- DEFINICIONES DE OPCIONES ---
+    TIPO_ENVIO_CHOICES = [
+        ('Nacional', 'Nacional'),
+        ('Internacional', 'Internacional'),
+    ]
+    
+    ESTADO_CHOICES = [
+        ('Pendiente', 'Pendiente'),
+        ('En Bodega', 'En Bodega'),
+        ('En Transporte', 'En Transporte'),
+        ('Completado', 'Completado'),
+    ]
+    
+    # --- CAMPOS DE ENVÍO Y ESTADO ---
+    
+    # 1. Dirección de Envío
+    direccion_envio = models.CharField(
+        max_length=500, 
+        verbose_name='Dirección de Envío',
+        default='Dirección pendiente de registro' 
+    )
+    
+    # 2. Tipo de Envío
+    tipo_envio = models.CharField(
+        max_length=15, 
+        choices=TIPO_ENVIO_CHOICES, 
+        default='Nacional',
+        verbose_name='Tipo de Envío'
+    )
+
+    # 3. Estado del Pedido
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADO_CHOICES,
+        default='Pendiente', 
+        verbose_name='Estado del Pedido'
+    )
+    
+    def __str__(self):
+        return f"Pedido #{self.id} de {self.usuario.username} ({self.estado})"
+    
 class DetallePedido(models.Model):
     pedido = models.ForeignKey('Pedido', related_name='detalles', on_delete=models.CASCADE) 
     

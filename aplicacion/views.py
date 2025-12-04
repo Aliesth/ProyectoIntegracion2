@@ -22,7 +22,7 @@ from django.contrib import messages
 from decimal import Decimal
 from django.http import HttpResponse
 # Asegúrate de importar los modelos correctos
-from .models import Pedido, DetallePedido 
+from .models import Pedidos, DetallePedido 
 from django.contrib.admin.views.decorators import staff_member_required
 # para de finir roles de usuario y usar decoradores
 
@@ -354,7 +354,7 @@ def confirmar_pedido(request):
                 total_a_cobrar = carrito.get_total_price() + costo_envio + costo_aduana
                 
                 # 4. CREAR EL PEDIDO (Encabezado)
-                nuevo_pedido = Pedido.objects.create(
+                nuevo_pedido = Pedidos.objects.create(
                     usuario=request.user,
                     total_pedido=total_a_cobrar, 
                     direccion_envio=direccion_recibida,
@@ -408,7 +408,7 @@ def confirmar_pedido(request):
 @login_required
 def pedido_exitoso(request, pedido_id):
     # 1. Obtiene el pedido o devuelve un error 404 si no existe
-    pedido = get_object_or_404(Pedido, id=pedido_id)
+    pedido = get_object_or_404(Pedidos, id=pedido_id)
     
     # 2. Asegúrate de que el usuario que ve el pedido es el dueño (Seguridad)
     if pedido.usuario != request.user:
@@ -494,7 +494,7 @@ def vaciar_tablas_pedido(request):
     
     # Se eliminan los registros de Pedido. El borrado en cascada 
     # se encargará de DetallePedido.
-    count_pedidos = Pedido.objects.all().delete()
+    count_pedidos = Pedidos.objects.all().delete()
     
     # El resultado de .delete() es una tupla: (número_objetos_eliminados, {diccionario_de_counts})
     total_eliminado = count_pedidos[0]

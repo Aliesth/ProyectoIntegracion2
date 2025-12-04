@@ -63,7 +63,7 @@ urlpatterns = [
     path('gestion_contratos/', views.gestion_contratos, name='gestion_contratos'),
     path('contratos/editar/<int:id>/', views.contrato_editar, name='contrato_editar'),
     path('contratos/eliminar/<int:id>/', views.contrato_eliminar, name='contrato_eliminar'),
-    path('admin/parche-db/eliminar-pedidos/', views.vaciar_tablas_pedido, name='vaciar_pedidos_db'),
+    path('eliminar-pedidos/', views.vaciar_tablas_pedido, name='vaciar_pedidos_db'),
 ]   
 
 if settings.DEBUG:
