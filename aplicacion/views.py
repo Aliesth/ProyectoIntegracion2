@@ -20,6 +20,10 @@ from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from decimal import Decimal
+from django.http import HttpResponse
+# Asegúrate de importar los modelos correctos
+from .models import Pedido, DetallePedido 
+from django.contrib.admin.views.decorators import staff_member_required
 # para de finir roles de usuario y usar decoradores
 
 TASA_ADUANA = Decimal('0.20') # 20% de aduana para internacional
@@ -474,3 +478,31 @@ def contrato_eliminar(request, id):
     contrato.delete()
     return redirect('gestion_contratos')
 
+
+
+
+
+
+@staff_member_required
+def vaciar_tablas_pedido(request):
+    """
+    Elimina todos los registros de Pedido y DetallePedido.
+    
+    Nota: Como DetallePedido usa on_delete=CASCADE al Pedido, 
+    al eliminar Pedido, los detalles se borran automáticamente.
+    """
+    
+    # Se eliminan los registros de Pedido. El borrado en cascada 
+    # se encargará de DetallePedido.
+    count_pedidos = Pedido.objects.all().delete()
+    
+    # El resultado de .delete() es una tupla: (número_objetos_eliminados, {diccionario_de_counts})
+    total_eliminado = count_pedidos[0]
+    
+    mensaje = (
+        f"🗑️ *¡Éxito!* La limpieza ha sido ejecutada."
+        f"Se eliminaron *{total_eliminado}* registros de Pedido y sus líneas de detalle relacionadas."
+        f"<br><br>Intente acceder a la tabla Pedido en el admin nuevamente."
+    )
+    
+    return HttpResponse(mensaje)
