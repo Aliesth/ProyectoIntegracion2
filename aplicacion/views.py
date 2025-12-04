@@ -494,12 +494,13 @@ def vaciar_tablas_pedido(request):
     
     # Se eliminan los registros de Pedido. El borrado en cascada 
     # se encargará de DetallePedido.
-    count_pedidos = Pedidos.objects.all().delete()
-    
+    #count_pedidos = Pedidos.objects.all().delete()
+    count_pedidos = Pedidos.objects.all()
+    print(count_pedidos)
     # El resultado de .delete() es una tupla: (número_objetos_eliminados, {diccionario_de_counts})
     total_eliminado = count_pedidos[0]
     
-    mensaje = (
+    mensaje = (f"{count_pedidos}"
         f"🗑️ *¡Éxito!* La limpieza ha sido ejecutada."
         f"Se eliminaron *{total_eliminado}* registros de Pedido y sus líneas de detalle relacionadas."
         f"<br><br>Intente acceder a la tabla Pedido en el admin nuevamente."
