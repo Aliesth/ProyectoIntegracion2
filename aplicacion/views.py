@@ -364,28 +364,28 @@ def confirmar_pedido(request):
                 )
 
                 # 5. CREAR LOS DETALLES DEL PEDIDO y ACTUALIZAR EL STOCK
-                """for item_id, item_data in carrito.cart.items():
+                for item_id, item_data in carrito.cart.items():
                     fruta = get_object_or_404(Fruta, id=item_id)
                     cantidad = item_data['quantity']
-                    precio = float(item_data['price'])"""
+                    precio = float(item_data['price'])
                     
                     # 5a. Comprobar y DEDUCIR EL STOCK
-                """ if fruta.stock < cantidad:
+                if fruta.stock < cantidad:
                         # 🚨 ¡ERROR DE STOCK! Esto fuerza la reversión de la transacción.
                         messages.error(request, f"Stock insuficiente: Solo quedan {fruta.stock} unidades de {fruta.nombre}.")
                         raise ValueError(f"Stock insuficiente para {fruta.nombre}.") 
                     
                     fruta.stock -= cantidad
-                    fruta.save()"""
+                    fruta.save()
                     
                     # 5b. Guardar cada línea de detalle
-                """DetallePedido.objects.create(
+                DetallePedido.objects.create(
                         pedido=nuevo_pedido,
                         fruta=fruta,
                         cantidad=cantidad,
                         precio_unitario=precio,
                         subtotal=(Decimal(cantidad) * Decimal(precio))
-                    )"""
+                    )
                 
                 # 6. LIMPIAR EL CARRITO DE LA SESIÓN (Solo si la transacción fue exitosa)
                  
