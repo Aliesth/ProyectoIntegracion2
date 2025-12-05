@@ -359,7 +359,7 @@ def confirmar_pedido(request):
                     total_pedido=total_a_cobrar, 
                     direccion_envio=direccion_recibida,
                     tipo_envio=tipo_envio_final,
-                    estado='Pendiente'
+                    #estado='Pendiente'
 
                 )
 
@@ -394,7 +394,7 @@ def confirmar_pedido(request):
                 
                 # 7. Redirigir a la página de éxito
                 #return redirect('pedido_exitoso', pedido_id=nuevo_pedido.id)
-                return redirect('catalogo/')
+                return redirect('index')
         except ValueError:
             # 🚨 Capturamos el ValueError (Stock Insuficiente) y redirigimos al carrito 🚨
             # El mensaje de error ya fue añadido en el Paso 5a
@@ -403,7 +403,7 @@ def confirmar_pedido(request):
         except Exception as e:
              # Captura cualquier otro error durante la transacción (ej. DB, etc.)
             messages.error(request, f"Ocurrió un error inesperado durante el checkout. Inténtalo de nuevo. Detalle: {e}")
-            return redirect('home/')
+            return redirect('index')
 
     # Si la petición no es POST, redirigimos al carrito
     return redirect('carrito')
