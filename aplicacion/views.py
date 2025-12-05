@@ -398,12 +398,12 @@ def confirmar_pedido(request):
         except ValueError:
             # 🚨 Capturamos el ValueError (Stock Insuficiente) y redirigimos al carrito 🚨
             # El mensaje de error ya fue añadido en el Paso 5a
-            return redirect('home/')
+            return redirect('carrito/')
             
         except Exception as e:
              # Captura cualquier otro error durante la transacción (ej. DB, etc.)
             messages.error(request, f"Ocurrió un error inesperado durante el checkout. Inténtalo de nuevo. Detalle: {e}")
-            return redirect('index')
+            return redirect('carrito')
 
     # Si la petición no es POST, redirigimos al carrito
     return redirect('carrito')
@@ -496,10 +496,10 @@ def vaciar_tablas_pedido(request):
     
     # Se eliminan los registros de Pedido. El borrado en cascada 
     # se encargará de DetallePedido.
-    count_pedidos = PedidosRealizados.objects.all().delete()
+    count_pedidos = PedidosRealizados.objects.all()
     
     # El resultado de .delete() es una tupla: (número_objetos_eliminados, {diccionario_de_counts})
-    total_eliminado = count_pedidos[0]
+    total_eliminado = count_pedidos
     
     mensaje = (
         f"🗑️ *¡Éxito!* La limpieza ha sido ejecutada."
