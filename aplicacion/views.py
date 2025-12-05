@@ -359,7 +359,7 @@ def confirmar_pedido(request):
                     total_pedido=total_a_cobrar, 
                     direccion_envio=direccion_recibida,
                     tipo_envio=tipo_envio_final,
-                    #estado='Pendiente'
+                    estado='Pendiente'
 
                 )
 
