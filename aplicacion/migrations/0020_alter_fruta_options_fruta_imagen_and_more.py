@@ -10,32 +10,4 @@ class Migration(migrations.Migration):
         ('aplicacion', '0019_alter_fruta_options_fruta_imagen_and_more'),
     ]
 
-    operations = [
-
-        
-        migrations.AlterModelOptions(
-            name='fruta',
-            options={'ordering': ['nombre']},
-        ),
-       
-        migrations.AddField(
-            model_name='pedido',
-            name='direccion_envio',
-            field=models.CharField(default='Dirección pendiente de registro', max_length=500, verbose_name='Dirección de Envío'),
-        ),
-        migrations.AddField(
-            model_name='pedido',
-            name='estado',
-            field=models.CharField(choices=[('Pendiente', 'Pendiente'), ('En Bodega', 'En Bodega'), ('En Transporte', 'En Transporte'), ('Completado', 'Completado')], default='Pendiente', max_length=20, verbose_name='Estado del Pedido'),
-        ),
-        migrations.AddField(
-            model_name='pedido',
-            name='tipo_envio',
-            field=models.CharField(choices=[('Nacional', 'Nacional'), ('Internacional', 'Internacional')], default='Nacional', max_length=15, verbose_name='Tipo de Envío'),
-        ),
-        migrations.AlterField(
-            model_name='perfil',
-            name='rol',
-            field=models.CharField(choices=[('productor', 'productor'), ('cliente', 'cliente')], default='cliente', max_length=20, verbose_name='Rol del usuario'),
-        ),
-    ]
+   
