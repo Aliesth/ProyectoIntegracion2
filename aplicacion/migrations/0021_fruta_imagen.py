@@ -12,18 +12,4 @@ class Migration(migrations.Migration):
         ('aplicacion', '0020_alter_fruta_options_fruta_imagen_and_more'),
     ]
 
-    operations = [ 
-        
-        migrations.CreateModel(
-            name='PedidosRealizados',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('fecha_pedido', models.DateTimeField(auto_now_add=True)),
-                ('total_pedido', models.DecimalField(decimal_places=2, default=0.0, max_digits=10)),
-                ('direccion_envio', models.CharField(default='Dirección pendiente de registro', max_length=500, verbose_name='Dirección de Envío')),
-                ('tipo_envio', models.CharField(choices=[('Nacional', 'Nacional'), ('Internacional', 'Internacional')], default='Nacional', max_length=15, verbose_name='Tipo de Envío')),
-                ('estado', models.CharField(choices=[('Pendiente', 'Pendiente'), ('En Bodega', 'En Bodega'), ('En Transporte', 'En Transporte'), ('Completado', 'Completado')], default='Pendiente', max_length=20, verbose_name='Estado del Pedido')),
-                ('usuario', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],)
-       
-    ]
+   
