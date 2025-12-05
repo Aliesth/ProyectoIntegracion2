@@ -364,7 +364,7 @@ def confirmar_pedido(request):
                 )
 
                 # 5. CREAR LOS DETALLES DEL PEDIDO y ACTUALIZAR EL STOCK
-                for item_id, item_data in carrito.cart.items():
+                """for item_id, item_data in carrito.cart.items():
                     fruta = get_object_or_404(Fruta, id=item_id)
                     cantidad = item_data['quantity']
                     precio = float(item_data['price'])
@@ -385,7 +385,7 @@ def confirmar_pedido(request):
                         cantidad=cantidad,
                         precio_unitario=precio,
                         subtotal=(Decimal(cantidad) * Decimal(precio))
-                    )
+                    )"""
                 
                 # 6. LIMPIAR EL CARRITO DE LA SESIÓN (Solo si la transacción fue exitosa)
                 carrito.clear() 
@@ -393,8 +393,8 @@ def confirmar_pedido(request):
                 messages.success(request, f"¡Pedido N°{nuevo_pedido.id} confirmado con éxito! Envío: {tipo_envio_final}.")
                 
                 # 7. Redirigir a la página de éxito
-                return redirect('pedido_exitoso', pedido_id=nuevo_pedido.id)
-        
+                #return redirect('pedido_exitoso', pedido_id=nuevo_pedido.id)
+                return redirect('pedido_exitoso')
         except ValueError:
             # 🚨 Capturamos el ValueError (Stock Insuficiente) y redirigimos al carrito 🚨
             # El mensaje de error ya fue añadido en el Paso 5a
