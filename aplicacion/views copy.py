@@ -330,7 +330,7 @@ def confirmar_pedido(request):
     if request.method == 'POST':
         try:
             # Iniciamos la transacción aquí. Si algo falla dentro, se revierte.
-            #with transaction.atomic():
+            with transaction.atomic():
                 # 1. RECIBIR DATOS DEL FORMULARIO DE DIRECCIÓN
                 direccion_recibida = request.POST.get('direccion_completa')
                 pais_code = request.POST.get('pais')
@@ -359,7 +359,7 @@ def confirmar_pedido(request):
                     total_pedido=total_a_cobrar, 
                     direccion_envio=direccion_recibida,
                     tipo_envio=tipo_envio_final,
-                    estado='Pendiente'
+                    #estado='Pendiente'
 
                 )
 
@@ -367,19 +367,19 @@ def confirmar_pedido(request):
                 """for item_id, item_data in carrito.cart.items():
                     fruta = get_object_or_404(Fruta, id=item_id)
                     cantidad = item_data['quantity']
-                    precio = float(item_data['price'])
+                    precio = float(item_data['price'])"""
                     
                     # 5a. Comprobar y DEDUCIR EL STOCK
-                if fruta.stock < cantidad:
+                """ if fruta.stock < cantidad:
                         # 🚨 ¡ERROR DE STOCK! Esto fuerza la reversión de la transacción.
                         messages.error(request, f"Stock insuficiente: Solo quedan {fruta.stock} unidades de {fruta.nombre}.")
                         raise ValueError(f"Stock insuficiente para {fruta.nombre}.") 
                     
-                fruta.stock -= cantidad
-                fruta.save()
+                    fruta.stock -= cantidad
+                    fruta.save()"""
                     
                     # 5b. Guardar cada línea de detalle
-                DetallePedido.objects.create(
+                """DetallePedido.objects.create(
                         pedido=nuevo_pedido,
                         fruta=fruta,
                         cantidad=cantidad,
@@ -388,13 +388,13 @@ def confirmar_pedido(request):
                     )"""
                 
                 # 6. LIMPIAR EL CARRITO DE LA SESIÓN (Solo si la transacción fue exitosa)
-                 
+                carrito.clear() 
 
                 messages.success(request, f"¡Pedido N°{nuevo_pedido.id} confirmado con éxito! Envío: {tipo_envio_final}.")
-                carrito.clear()
+                
                 # 7. Redirigir a la página de éxito
                 #return redirect('pedido_exitoso', pedido_id=nuevo_pedido.id)
-                return redirect('home/')
+                return render('home')
         except ValueError:
             # 🚨 Capturamos el ValueError (Stock Insuficiente) y redirigimos al carrito 🚨
             # El mensaje de error ya fue añadido en el Paso 5a
