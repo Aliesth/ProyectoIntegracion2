@@ -375,8 +375,8 @@ def confirmar_pedido(request):
                         messages.error(request, f"Stock insuficiente: Solo quedan {fruta.stock} unidades de {fruta.nombre}.")
                         raise ValueError(f"Stock insuficiente para {fruta.nombre}.") 
                     
-                    fruta.stock -= cantidad
-                    fruta.save()
+                 fruta.stock -= cantidad
+                 fruta.save()
                     
                     # 5b. Guardar cada línea de detalle
                 DetallePedido.objects.create(
