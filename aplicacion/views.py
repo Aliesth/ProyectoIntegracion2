@@ -364,7 +364,7 @@ def confirmar_pedido(request):
                 )
 
                 # 5. CREAR LOS DETALLES DEL PEDIDO y ACTUALIZAR EL STOCK
-                """for item_id, item_data in carrito.cart.items():
+                for item_id, item_data in carrito.cart.items():
                     fruta = get_object_or_404(Fruta, id=item_id)
                     cantidad = item_data['quantity']
                     precio = float(item_data['price'])
@@ -385,7 +385,7 @@ def confirmar_pedido(request):
                         cantidad=cantidad,
                         precio_unitario=precio,
                         subtotal=(Decimal(cantidad) * Decimal(precio))
-                    )"""
+                    )
                 
                 # 6. LIMPIAR EL CARRITO DE LA SESIÓN (Solo si la transacción fue exitosa)
                  
