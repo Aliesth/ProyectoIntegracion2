@@ -358,7 +358,9 @@ def confirmar_pedido(request):
                     usuario=request.user,
                     total_pedido=total_a_cobrar, 
                     direccion_envio=direccion_recibida,
-                    tipo_envio=tipo_envio_final
+                    tipo_envio=tipo_envio_final,
+                    estado='Pendiente'
+
                 )
 
                 # 5. CREAR LOS DETALLES DEL PEDIDO y ACTUALIZAR EL STOCK
