@@ -330,7 +330,7 @@ def confirmar_pedido(request):
     if request.method == 'POST':
         try:
             # Iniciamos la transacción aquí. Si algo falla dentro, se revierte.
-            with transaction.atomic():
+            #with transaction.atomic():
                 # 1. RECIBIR DATOS DEL FORMULARIO DE DIRECCIÓN
                 direccion_recibida = request.POST.get('direccion_completa')
                 pais_code = request.POST.get('pais')
