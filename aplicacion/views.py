@@ -388,10 +388,10 @@ def confirmar_pedido(request):
                     )"""
                 
                 # 6. LIMPIAR EL CARRITO DE LA SESIÓN (Solo si la transacción fue exitosa)
-                carrito.clear() 
+                 
 
                 messages.success(request, f"¡Pedido N°{nuevo_pedido.id} confirmado con éxito! Envío: {tipo_envio_final}.")
-                
+                carrito.clear()
                 # 7. Redirigir a la página de éxito
                 #return redirect('pedido_exitoso', pedido_id=nuevo_pedido.id)
                 return redirect('home')
