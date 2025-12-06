@@ -394,7 +394,7 @@ def confirmar_pedido(request):
                 carrito.clear()
                 # 7. Redirigir a la página de éxito
                 #return redirect('pedido_exitoso', pedido_id=nuevo_pedido.id)
-                return redirect('home/')
+                return redirect('index')
         except ValueError:
             # 🚨 Capturamos el ValueError (Stock Insuficiente) y redirigimos al carrito 🚨
             # El mensaje de error ya fue añadido en el Paso 5a
