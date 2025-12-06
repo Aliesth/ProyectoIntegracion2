@@ -195,7 +195,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 import logging
 import sys
 
-LOGGING = {
+"""LOGGING = {
     "version": 1,
     "handlers": {
         "console": {
@@ -207,4 +207,4 @@ LOGGING = {
         "handlers": ["console"],
         "level": "ERROR",
     },
-}
+}"""
