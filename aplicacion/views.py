@@ -22,7 +22,7 @@ from django.contrib import messages
 from decimal import Decimal
 from django.http import HttpResponse
 # Asegúrate de importar los modelos correctos
-from .models import PedidosRealizados, DetalledePedido, DetallePedido  
+from .models import PedidosRealizados, DetalledePedido, DetallePedido,Pedidos  
 from django.contrib.admin.views.decorators import staff_member_required
 # para de finir roles de usuario y usar decoradores
 
@@ -354,7 +354,7 @@ def confirmar_pedido(request):
                 total_a_cobrar = carrito.get_total_price() + costo_envio + costo_aduana
                 
                 # 4. CREAR EL PEDIDO (Encabezado)
-                nuevo_pedido = PedidosRealizados.objects.create(
+                nuevo_pedido = Pedidos.objects.create(
                     usuario=request.user,
                     total_pedido=total_a_cobrar, 
                     direccion_envio=direccion_recibida,
