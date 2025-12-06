@@ -410,7 +410,7 @@ def confirmar_pedido(request):
 @login_required
 def pedido_exitoso(request, pedido_id):
     # 1. Obtiene el pedido o devuelve un error 404 si no existe
-    pedido = get_object_or_404(PedidosRealizados, id=pedido_id)
+    pedido = get_object_or_404(Pedidos, id=pedido_id)
     
     # 2. Asegúrate de que el usuario que ve el pedido es el dueño (Seguridad)
     if pedido.usuario != request.user:
@@ -445,14 +445,14 @@ def pedido_exitoso(request, pedido_id):
     # 4. Renderiza la plantilla
     return render(request, 'pedido_exitoso.html', context)
 
-    context = {
+    """context = {
         'pedido': pedido,
         # Django te permite acceder a los DetallePedido usando el related_name='detalles'
         'detalles': pedido.detalles.all() 
     }
     
     # Asegúrate de crear este template: aplicacion/templates/pedido_exitoso.html
-    return render(request, 'pedido_exitoso.html', context)
+    return render(request, 'pedido_exitoso.html', context)"""
 
 
 #Vista para contratos de transportes
