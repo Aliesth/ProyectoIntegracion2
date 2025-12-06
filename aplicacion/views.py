@@ -366,8 +366,8 @@ def confirmar_pedido(request):
                 # 5. CREAR LOS DETALLES DEL PEDIDO y ACTUALIZAR EL STOCK
                 for item_id, item_data in carrito.cart.items():
                     fruta = get_object_or_404(Fruta, id=item_id)
-                    cantidad = item_data['quantity']
-                    precio = float(item_data['price'])
+                    cantidad = Decimal(item_data['quantity'])
+                    precio = Decimal(item_data['price'])  
                     
                     # 5a. Comprobar y DEDUCIR EL STOCK
                 """if fruta.stock < cantidad:
@@ -375,16 +375,16 @@ def confirmar_pedido(request):
                         messages.error(request, f"Stock insuficiente: Solo quedan {fruta.stock} unidades de {fruta.nombre}.")
                         raise ValueError(f"Stock insuficiente para {fruta.nombre}.") """
                     
-                fruta.stock -= cantidad
+                fruta.stock -= int(cantidad) # <-- Usamos int si stock es IntegerField
                 fruta.save()
                     
                     # 5b. Guardar cada línea de detalle
                 DetallePedido.objects.create(
                         pedido=nuevo_pedido,
                         fruta=fruta,
-                        cantidad=cantidad,
+                        cantidad=int(cantidad),
                         precio_unitario=precio,
-                        subtotal=(Decimal(cantidad) * Decimal(precio))
+                        subtotal=(cantidad * precio)
                     )
                 
                 # 6. LIMPIAR EL CARRITO DE LA SESIÓN (Solo si la transacción fue exitosa)
@@ -394,7 +394,7 @@ def confirmar_pedido(request):
                 carrito.clear()
                 # 7. Redirigir a la página de éxito
                 #return redirect('pedido_exitoso', pedido_id=nuevo_pedido.id)
-                return redirect('home/')
+                return redirect('index')
         except ValueError:
             # 🚨 Capturamos el ValueError (Stock Insuficiente) y redirigimos al carrito 🚨
             # El mensaje de error ya fue añadido en el Paso 5a
