@@ -379,7 +379,7 @@ def confirmar_pedido(request):
                 fruta.save()
                     
                     # 5b. Guardar cada línea de detalle
-                DetalledePedido.objects.create(
+                DetallePedido.objects.create(
                         pedido=nuevo_pedido,
                         fruta=fruta,
                         cantidad=int(cantidad),
