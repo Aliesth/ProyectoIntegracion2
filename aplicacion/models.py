@@ -7,11 +7,11 @@ from decimal import Decimal
 from cloudinary.models import CloudinaryField
 
 class Rol(models.TextChoices):
-    #ADMINISTRADOR = 'Administrador', _('administrador')
+    ADMINISTRADOR = 'Administrador', _('administrador')
     productor = 'productor', _('productor') # Cambiado a 'Productor' según tu select
     cliente = 'cliente', _('cliente')
-    #TRANSPORTISTA = 'TRANSPORTISTA', _('Transportista')
-    #CONSULTOR = 'CONSULTOR', _('Consultor')
+    TRANSPORTISTA = 'TRANSPORTISTA', _('Transportista')
+    CONSULTOR = 'CONSULTOR', _('Consultor')
 
 
 class Perfil(models.Model):
@@ -201,7 +201,7 @@ class PedidosRealizados(models.Model):
 
 
 class DetallePedido(models.Model):
-    pedido = models.ForeignKey('Pedido', related_name='detalles', on_delete=models.CASCADE) 
+    pedido = models.ForeignKey('PedidosRealizados', related_name='detalles', on_delete=models.CASCADE) 
     
     #Si Fruta está definida antes, usamos Fruta. Si no, usamos 'Fruta'.
     fruta = models.ForeignKey('Fruta', on_delete=models.SET_NULL, null=True) 
