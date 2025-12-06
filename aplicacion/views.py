@@ -22,7 +22,7 @@ from django.contrib import messages
 from decimal import Decimal
 from django.http import HttpResponse
 # Asegúrate de importar los modelos correctos
-from .models import PedidosRealizados, DetallePedido 
+from .models import PedidosRealizados, DetalledePedido, DetallePedido  
 from django.contrib.admin.views.decorators import staff_member_required
 # para de finir roles de usuario y usar decoradores
 
@@ -379,7 +379,7 @@ def confirmar_pedido(request):
                 fruta.save()
                     
                     # 5b. Guardar cada línea de detalle
-                DetallePedido.objects.create(
+                DetalledePedido.objects.create(
                         pedido=nuevo_pedido,
                         fruta=fruta,
                         cantidad=int(cantidad),

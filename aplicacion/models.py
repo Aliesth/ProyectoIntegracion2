@@ -201,6 +201,30 @@ class PedidosRealizados(models.Model):
 
 
 class DetallePedido(models.Model):
+    pedido = models.ForeignKey('Pedidos', related_name='detalles_antiguos', on_delete=models.CASCADE) 
+    
+    #Si Fruta está definida antes, usamos Fruta. Si no, usamos 'Fruta'.
+    fruta = models.ForeignKey('Fruta', on_delete=models.SET_NULL, null=True) 
+    
+    cantidad = models.IntegerField(default=1)
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2) 
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+
+    def __str__(self):
+        #Proteger contra objetos eliminados (NoneType error)
+        fruta_nombre = self.fruta.nombre if self.fruta else "Producto Eliminado"
+        
+        # Proteger contra la eliminación del Pedido (menos probable con CASCADE)
+        pedido_id = self.pedido.id if self.pedido else "N/A"
+        
+        return f"{self.cantidad} x {fruta_nombre} en Pedido #{pedido_id}"
+
+
+    
+
+
+
+class DetalledePedido(models.Model):
     pedido = models.ForeignKey('PedidosRealizados', related_name='detalles', on_delete=models.CASCADE) 
     
     #Si Fruta está definida antes, usamos Fruta. Si no, usamos 'Fruta'.
