@@ -508,3 +508,24 @@ def vaciar_tablas_pedido(request):
     )
     
     return HttpResponse(mensaje)
+
+
+@login_required
+def listar_pedidos(request):
+    """
+    Lista todos los pedidos realizados por el usuario autenticado.
+    """
+    # 1. Obtener todos los pedidos del usuario actual, ordenados por fecha descendente
+    #    (El más reciente primero)
+    pedidos_del_usuario = Pedidos.objects.filter(
+        usuario=request.user
+    ).order_by('-fecha_pedido')
+
+    # 2. Contexto a enviar al template
+    context = {
+        'pedidos': pedidos_del_usuario,
+        'titulo': 'Mis Pedidos',
+    }
+
+    # 3. Renderizar el template
+    return render(request, 'pedidos/lista_pedidos.html', context)
