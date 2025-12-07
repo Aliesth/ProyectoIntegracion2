@@ -65,6 +65,7 @@ urlpatterns = [
     path('contratos/eliminar/<int:id>/', views.contrato_eliminar, name='contrato_eliminar'),
     path('eliminar-pedidos/', views.vaciar_tablas_pedido, name='vaciar_pedidos_db'),
     path('mis-pedidos/', views.listar_pedidos, name='listar_pedidos'),
+    path('gestion-pedidos/', views.listar_todos_los_pedidos, name='gestion_pedidos_todos'),
 ]   
 
 if settings.DEBUG:

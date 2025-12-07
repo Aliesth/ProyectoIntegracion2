@@ -55,11 +55,16 @@
 
 {% block content %}
 <div class="container mt-5">
+    <hr>
+    <hr>
     <h2>📦 Mis Pedidos</h2>
 
     {% if pedidos %}
     <div class="list-group">
         {% for pedido in pedidos %}
+        <p class="mb-1 text-info">
+    Cliente: {{ pedido.usuario.username }}
+</p>
         <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center mb-3">
             <div class="pedido-info">
                 <h5 class="mb-1">

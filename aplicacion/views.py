@@ -529,3 +529,34 @@ def listar_pedidos(request):
 
     # 3. Renderizar el template
     return render(request, 'pedidos/lista_pedidos.html', context)
+
+
+# Usaremos esta función para asegurar que solo los roles no-cliente puedan acceder
+"""def puede_ver_todos_los_pedidos(user):
+    """
+    Define quién tiene permiso para ver todos los pedidos.
+    (Ej: Administrador, Productor, Transportista)
+    """
+    # Usamos la lógica que ya tienes:
+    return es_administrador(user) or es_productor(user) or es_transportista(user)"""
+
+
+@login_required # Debe estar loggeado
+#@user_passes_test(puede_ver_todos_los_pedidos) # Solo si pasa el test del rol
+def listar_todos_los_pedidos(request):
+    """
+    Lista TODOS los pedidos de TODOS los usuarios (solo para personal autorizado).
+    """
+    
+    # 1. Obtener TODOS los pedidos, sin filtro de usuario.
+    #    Ordenamos por fecha descendente (más reciente primero).
+    pedidos_totales = Pedidos.objects.all().order_by('-fecha_pedido')
+
+    # 2. Contexto a enviar al template
+    context = {
+        'pedidos': pedidos_totales,
+        'titulo': 'Gestión de Todos los Pedidos',
+    }
+
+    # 3. Renderizar el template (usaremos el mismo template 'lista_pedidos.html')
+    return render(request, 'pedidos/lista_pedidos.html', context)
