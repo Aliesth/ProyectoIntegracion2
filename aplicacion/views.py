@@ -417,13 +417,13 @@ def pedido_exitoso(request, pedido_id):
         return redirect('index') 
 
     # 3. Prepara los datos de contexto
-    detalles = pedido.detalles.all() 
+    detalles_antiguos = pedido.detalles_antiguos.all() 
     
     # PASO CRÍTICO: Cálculo del desglose en Python 
     
     # A. Sumar el subtotal de todos los productos (total de ítems sin envío)
     # Usamos sum() sobre un generador para sumar los campos Decimal
-    total_productos_acumulado = sum(detalle.subtotal for detalle in detalles)
+    total_productos_acumulado = sum(detalle.subtotal for detalle in detalles_antiguos)
 
     # B. Calcular el Costo de Envío y Aduana por diferencia
     # total_guardado (en DB) - subtotal_productos (calculado ahora)
@@ -436,7 +436,7 @@ def pedido_exitoso(request, pedido_id):
     context = {
         'titulo': 'Pedido Confirmado',
         'pedido': pedido,
-        'detalles': detalles,
+        'detalles': detalles_antiguos,
         # PASAMOS LAS VARIABLES AL CONTEXTO 
         'total_productos_acumulado': total_productos_acumulado,
         'costo_envio_final': costo_envio_final, 
