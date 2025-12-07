@@ -1,9 +1,50 @@
-<h2>✅ Conexión Exitosa: Pedidos del Usuario</h2>
-{% if pedidos %}
-    <p>Pedidos encontrados: {{ pedidos|length }}</p>
-    {% for pedido in pedidos %}
-        <p>ID: {{ pedido.id }} - Estado: {{ pedido.estado }}</p>
-    {% endfor %}
-{% else %}
-    <p>No hay pedidos.</p>
-{% endif %}
+{% extends "base.html" %} 
+{% block content %}
+<div class="container mt-5">
+    <h2>📦 Mis Pedidos</h2>
+
+    {% if pedidos %}
+    <div class="list-group">
+        {% for pedido in pedidos %}
+        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center mb-3">
+            <div class="pedido-info">
+                <h5 class="mb-1">
+                    <span class="badge bg-primary">Pedido #{{ pedido.id }}</span>
+                </h5>
+                <p class="mb-1 text-muted">
+                    Fecha: {{ pedido.fecha_pedido|date:"d M Y, H:i" }}
+                </p>
+                
+                <p class="mb-1 fw-bold">
+                    Total: <span class="text-success">${{ pedido.total_pedido|floatformat:0 }}</span>
+                </p>
+
+                <small class="text-break">
+                    Envío ({{ pedido.get_tipo_envio_display }}): {{ pedido.direccion_envio|truncatechars:100 }}
+                </small>
+            </div>
+
+            <div class="pedido-estado text-center">
+                {% if pedido.estado == 'Completado' %}
+                    <span class="badge bg-success">{{ pedido.get_estado_display }}</span>
+                {% elif pedido.estado == 'En Transporte' %}
+                    <span class="badge bg-info">{{ pedido.get_estado_display }}</span>
+                {% elif pedido.estado == 'En Bodega' %}
+                    <span class="badge bg-warning">{{ pedido.get_estado_display }}</span>
+                {% else %}
+                    <span class="badge bg-secondary">{{ pedido.get_estado_display }}</span>
+                {% endif %}
+                
+                <br>
+                <a href="{% url 'pedido_exitoso' pedido.id %}" class="btn btn-sm btn-outline-primary mt-2">Ver Detalles</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        Aún no has realizado ningún pedido. ¡Es hora de comprar! 🛍️
+    </div>
+    {% endif %}
+</div>
+{% endblock content %}

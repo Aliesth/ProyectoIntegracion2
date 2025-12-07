@@ -1,0 +1,9 @@
+<h2>✅ Conexión Exitosa: Pedidos del Usuario</h2>
+{% if pedidos %}
+    <p>Pedidos encontrados: {{ pedidos|length }}</p>
+    {% for pedido in pedidos %}
+        <p>ID: {{ pedido.id }} - Estado: {{ pedido.estado }}</p>
+    {% endfor %}
+{% else %}
+    <p>No hay pedidos.</p>
+{% endif %}
