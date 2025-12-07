@@ -533,10 +533,10 @@ def listar_pedidos(request):
 
 # Usaremos esta función para asegurar que solo los roles no-cliente puedan acceder
 """def puede_ver_todos_los_pedidos(user):
-    """
-    Define quién tiene permiso para ver todos los pedidos.
-    (Ej: Administrador, Productor, Transportista)
-    """
+   
+    #Define quién tiene permiso para ver todos los pedidos.
+    #(Ej: Administrador, Productor, Transportista)
+    
     # Usamos la lógica que ya tienes:
     return es_administrador(user) or es_productor(user) or es_transportista(user)"""
 
