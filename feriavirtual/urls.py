@@ -66,6 +66,8 @@ urlpatterns = [
     path('eliminar-pedidos/', views.vaciar_tablas_pedido, name='vaciar_pedidos_db'),
     path('mis-pedidos/', views.listar_pedidos, name='listar_pedidos'),
     path('gestion-pedidos/', views.listar_todos_los_pedidos, name='gestion_pedidos_todos'),
+    path('pedidos/actualizar_estado/<int:pedido_id>/', views.actualizar_estado_pedido, 
+         name='actualizar_estado_pedido'),
 ]   
 
 if settings.DEBUG:

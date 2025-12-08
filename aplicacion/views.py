@@ -560,3 +560,39 @@ def listar_todos_los_pedidos(request):
 
     # 3. Renderizar el template (usaremos el mismo template 'lista_pedidos.html')
     return render(request, 'pedidos/lista_pedidos.html', context)
+
+
+
+def es_personal_autorizado(user):
+    # Criterio de autorización, ej: si el usuario es staff o superusuario
+    return user.is_staff or user.is_superuser
+
+# @user_passes_test(es_personal_autorizado) # Opcional: Asegura que solo personal autorizado pueda acceder
+@require_POST # Solo permite peticiones POST
+def actualizar_estado_pedido(request, pedido_id):
+    """
+    Recibe el ID del pedido y el nuevo estado (vía POST) para actualizarlo.
+    """
+    # 1. Obtener el pedido o devolver 404 si no existe
+    pedido = get_object_or_404(Pedidos, id=pedido_id)
+
+    # 2. Obtener el nuevo estado enviado desde el formulario
+    nuevo_estado = request.POST.get('nuevo_estado')
+
+    # 3. Validar que el nuevo estado sea uno válido
+    # Obtenemos las opciones de estado directamente del modelo
+    estados_validos = [choice[0] for choice in Pedidos.ESTADO_CHOICES]
+
+    if nuevo_estado and nuevo_estado in estados_validos:
+        # 4. Actualizar el campo y guardar
+        pedido.estado = nuevo_estado
+        pedido.save()
+        # Opcional: Agregar un mensaje de éxito
+        # from django.contrib import messages
+        # messages.success(request, f"El estado del Pedido #{pedido_id} ha sido actualizado a {nuevo_estado}.")
+    else:
+        print("Agregar un mensaje de error si el estado no es válido")
+        pass
+        
+    # 5. Redirigir de vuelta a la lista de todos los pedidos
+    return redirect('gestion_pedidos_todos') # Asegúrate de que este es el nombre de tu URL

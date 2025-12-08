@@ -84,21 +84,19 @@
             </div>
 
             <div class="pedido-estado text-center">
-    <form method="POST" action="{% url 'actualizar_estado_pedido' pedido.id %}" class="d-flex flex-column align-items-center">
-        {% csrf_token %}
-        
-        <select name="nuevo_estado" class="form-select form-select-sm mb-2" onchange="this.form.submit()">
-            {% for key, value in pedido.ESTADO_CHOICES %}
-                <option value="{{ key }}" {% if pedido.estado == key %}selected{% endif %}>
-                    {{ value }}
-                </option>
-            {% endfor %}
-        </select>
-        
-        </form>
-    
-    <a href="{% url 'pedido_exitoso' pedido.id %}" class="btn btn-sm btn-outline-primary mt-2">Ver Detalles</a>
-</div>
+                {% if pedido.estado == 'Completado' %}
+                    <span class="badge bg-success">{{ pedido.get_estado_display }}</span>
+                {% elif pedido.estado == 'En Transporte' %}
+                    <span class="badge bg-info">{{ pedido.get_estado_display }}</span>
+                {% elif pedido.estado == 'En Bodega' %}
+                    <span class="badge bg-warning">{{ pedido.get_estado_display }}</span>
+                {% else %}
+                    <span class="badge bg-secondary">{{ pedido.get_estado_display }}</span>
+                {% endif %}
+                
+                <br>
+                <a href="{% url 'pedido_exitoso' pedido.id %}" class="btn btn-sm btn-outline-primary mt-2">Ver Detalles</a>
+            </div>
         </div>
         {% endfor %}
     </div>
