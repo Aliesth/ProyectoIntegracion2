@@ -82,7 +82,7 @@
                     Envío ({{ pedido.get_tipo_envio_display }}): {{ pedido.direccion_envio|truncatechars:100 }}
                 </small>
             </div>
-
+            {% if es_administrador %}
             <div class="pedido-estado text-center">
     <form method="POST" action="{% url 'actualizar_estado_pedido' pedido.id %}" class="d-flex flex-column align-items-center">
         {% csrf_token %}
@@ -99,6 +99,26 @@
     
     <a href="{% url 'pedido_exitoso' pedido.id %}" class="btn btn-sm btn-outline-primary mt-2">Ver Detalles</a>
 </div>
+{% endif %}
+    {% if not es_administrador %}
+    <div class="pedido-estado text-center">
+                {% if pedido.estado == 'Completado' %}
+                    <span class="badge bg-success">{{ pedido.get_estado_display }}</span>
+                {% elif pedido.estado == 'En Transporte' %}
+                    <span class="badge bg-info">{{ pedido.get_estado_display }}</span>
+                {% elif pedido.estado == 'En Bodega' %}
+                    <span class="badge bg-warning">{{ pedido.get_estado_display }}</span>
+                {% else %}
+                    <span class="badge bg-secondary">{{ pedido.get_estado_display }}</span>
+                {% endif %}
+                
+                <br>
+                <a href="{% url 'pedido_exitoso' pedido.id %}" class="btn btn-sm btn-outline-primary mt-2">Ver Detalles</a>
+            </div>
+
+
+
+ {% endif %}
         </div>
         {% endfor %}
     </div>
