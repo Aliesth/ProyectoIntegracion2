@@ -64,6 +64,12 @@ h1, h2, h3, .card-header {
     height: 200px !important;
     object-fit: cover !important;
     border-bottom: 2px solid #28a745 !important;
+    width: 100%; 
+    
+    /* 2. Elimina posibles márgenes internos o externos que causen espacio */
+    padding: 0;
+    margin: 0;
+    display: block; /
 }
 
 /* Efecto hover general para las cards */
