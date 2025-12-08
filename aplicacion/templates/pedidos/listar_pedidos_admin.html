@@ -82,6 +82,7 @@
                     Envío ({{ pedido.get_tipo_envio_display }}): {{ pedido.direccion_envio|truncatechars:100 }}
                 </small>
             </div>
+
             <div class="pedido-estado text-center">
     <form method="POST" action="{% url 'actualizar_estado_pedido' pedido.id %}" class="d-flex flex-column align-items-center">
         {% csrf_token %}
@@ -110,8 +111,3 @@
 {% endblock content %}
 
 </body>
-
-
-
-
-
