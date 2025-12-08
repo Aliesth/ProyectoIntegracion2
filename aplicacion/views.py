@@ -559,7 +559,7 @@ def listar_todos_los_pedidos(request):
     }
 
     # 3. Renderizar el template (usaremos el mismo template 'lista_pedidos.html')
-    return render(request, 'pedidos/lista_pedidos.html', context)
+    return render(request, 'pedidos/listar_pedidos_admin.html', context)
 
 
 
