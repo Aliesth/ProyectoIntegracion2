@@ -567,7 +567,7 @@ def es_personal_autorizado(user):
     # Criterio de autorización, ej: si el usuario es staff o superusuario
     return user.is_staff or user.is_superuser
 
-# @user_passes_test(es_personal_autorizado) # Opcional: Asegura que solo personal autorizado pueda acceder
+# @user_passes_test(es_administrador) # Opcional: Asegura que solo personal autorizado pueda acceder
 @require_POST # Solo permite peticiones POST
 def actualizar_estado_pedido(request, pedido_id):
     """
