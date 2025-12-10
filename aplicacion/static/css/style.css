@@ -349,3 +349,6 @@ padding-top: 10px;
 .navbar-nav .nav-link {
     white-space: nowrap !important; /* <--- ¡Esto garantiza que no se rompa el texto! */
 }
+nav-item.{
+white-space: nowrap;
+}
