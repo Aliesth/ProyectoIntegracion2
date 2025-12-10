@@ -30,11 +30,16 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link active" href="{% url 'productos' %}">Productos</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'listar_pedidos' %}">Mis Pedidos</a></li>
-                    {% if es_administrador %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'ventas' %}">Ventas</a></li>
+                   {% if es_administrador %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'gestion_pedidos_todos' %}">Administrar ventas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contrato_list' %}">Contratos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'gestion_contratos' %}">Gestión Contratos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'catalogo_gestion' %}">Gestión catalogo</a></li>
+                <!--    <li class="nav-item"><a class="nav-link" href="{% url 'ventas' %}">Ventas</a></li>-->
                     <li class="nav-item"><a class="nav-link" href="{% url 'subastas' %}">Subastas</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'reportes' %}">Reportes</a></li>
-                    {% endif %}
+
+                {% endif %}
                 </ul>
                 <div class="d-flex">
                     <a href="{% url 'carrito' %}">🛒</a>

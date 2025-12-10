@@ -323,3 +323,16 @@ padding-top: 10px;
 
 
 }
+
+* Navbar */
+.navbar-brand {
+    font-size: 1.3rem;
+}
+
+/* * AÑADE ESTE BLOQUE 
+ * Esto asegura que el texto dentro de los enlaces del menú
+ * no salte de línea, forzando a que las dos palabras se mantengan juntas.
+ */
+.navbar-nav .nav-item .nav-link {
+    white-space: nowrap; 
+}
