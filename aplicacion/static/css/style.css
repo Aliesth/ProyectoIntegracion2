@@ -336,3 +336,16 @@ padding-top: 10px;
 .navbar-nav .nav-item .nav-link {
     white-space: nowrap; 
 }
+
+/* El valor predeterminado de Bootstrap es 1rem (16px), lo reduciremos para ganar espacio */
+.navbar-nav .nav-link {
+    /* Ajusta este valor (0.5rem o 8px) para que todos los elementos quepan. */
+    padding-left: 0.5rem; 
+    padding-right: 0.5rem;
+}
+
+/* 2. EVITAR LOS SALTOS DE LÍNEA FORZADAMENTE */
+/* Esto obliga a que cualquier texto de dos palabras se mantenga en una sola línea. */
+.navbar-nav .nav-link {
+    white-space: nowrap !important; /* <--- ¡Esto garantiza que no se rompa el texto! */
+}
